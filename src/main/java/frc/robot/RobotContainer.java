@@ -3,6 +3,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.subsystems.Swerve;
 import frc.robot.util.Controller;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 
 public class RobotContainer {
     private final Swerve swerve = new Swerve();
@@ -22,5 +24,7 @@ public class RobotContainer {
                 swerve
             )
         );
+        SmartDashboard.putData("SentField", swerve.getField());
+        
     }
 }
