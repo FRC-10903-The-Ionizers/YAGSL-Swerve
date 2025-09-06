@@ -76,4 +76,9 @@ public class Swerve extends SubsystemBase {
         // Apply the generated speeds
         drive(xSpeed, ySpeed, rotation, true);
     }
+
+    public SwerveDrive getSwerveDrive() {
+        return swerveDrive;
+    }
+
 }
