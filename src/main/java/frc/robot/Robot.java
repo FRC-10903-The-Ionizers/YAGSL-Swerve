@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class Robot extends TimedRobot {
     private RobotContainer robotContainer;
     // Loads a swerve trajectory, alternatively use DifferentialSample if the robot is tank drive
-    private final Optional<Trajectory<SwerveSample>> trajectory = Choreo.loadTrajectory("Test");
+    private final Optional<Trajectory<SwerveSample>> trajectory = Choreo.loadTrajectory("New Path.traj");
     private final Timer timer = new Timer();
     
     @Override
@@ -31,13 +31,14 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         if (trajectory.isPresent()) {
+            System.out.println("Initial Pose Read");
             // Get the initial pose of the trajectory
             Optional<Pose2d> initialPose = trajectory.get().getInitialPose(isRedAlliance());
 
-            if (initialPose.isPresent()) {
-                // Reset odometry to the start of the trajectory
-                robotContainer.getSwerve().getSwerveDrive().resetOdometry(initialPose.get());
-            }
+            // if (initialPose.isPresent()) {
+            //     // Reset odometry to the start of the trajectory
+            //     robotContainer.getSwerve().getSwerveDrive().resetOdometry(initialPose.get());
+            // }
         }
 
         // Reset and start the timer when the autonomous period begins
