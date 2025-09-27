@@ -27,4 +27,8 @@ public class RobotContainer {
         SmartDashboard.putData("SentField", swerve.getField());
         
     }
+
+    public Swerve getSwerve(){
+        return swerve;
+    }
 }
