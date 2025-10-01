@@ -1,8 +1,8 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.subsystems.Swerve;
 import frc.robot.util.Controller;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
@@ -12,20 +12,17 @@ public class RobotContainer {
     private final Controller.SwerveController swerveController = controller.new SwerveController();
 
     public RobotContainer() {
-        // Default command that defers driving logic to SwerveController
-        swerve.setDefaultCommand(
-            new RunCommand(
-                () -> swerve.drive(
-                        swerveController.getDriveX(),
-                        swerveController.getDriveY(),
-                        swerveController.getRotation(),
-                        swerveController.isFieldRelative()
-                ),
-                swerve
-            )
+        SmartDashboard.putData("SwerveField", swerve.getField());
+    }
+
+    public void controllerDrive() {
+        Translation2d driveTranslation = new Translation2d(swerveController.getDriveX(), swerveController.getDriveY());
+        swerve.getSwerveDrive().drive(
+            driveTranslation,
+            swerveController.getRotation(),
+            swerveController.isFieldRelative(),
+            false
         );
-        SmartDashboard.putData("SentField", swerve.getField());
-        
     }
 
     public Swerve getSwerve(){

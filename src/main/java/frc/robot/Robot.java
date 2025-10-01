@@ -6,21 +6,26 @@ import choreo.Choreo;
 import choreo.trajectory.SwerveSample;
 import choreo.trajectory.Trajectory;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 
 public class Robot extends TimedRobot {
     private RobotContainer robotContainer;
     // Loads a swerve trajectory, alternatively use DifferentialSample if the robot is tank drive
-    private final Optional<Trajectory<SwerveSample>> trajectory = Choreo.loadTrajectory("New Path.traj");
+    private final Optional<Trajectory<SwerveSample>> trajectory = Choreo.loadTrajectory("Test.traj");
     private final Timer timer = new Timer();
     
     @Override
     public void robotInit() {
         robotContainer = new RobotContainer();
+
+        // Optionally disable the joystick connection warning
+        DriverStation.silenceJoystickConnectionWarning(true);
     }
 
     @Override
@@ -35,10 +40,10 @@ public class Robot extends TimedRobot {
             // Get the initial pose of the trajectory
             Optional<Pose2d> initialPose = trajectory.get().getInitialPose(isRedAlliance());
 
-            // if (initialPose.isPresent()) {
-            //     // Reset odometry to the start of the trajectory
-            //     robotContainer.getSwerve().getSwerveDrive().resetOdometry(initialPose.get());
-            // }
+            if (initialPose.isPresent()) {
+                // Reset odometry to the start of the trajectory
+                robotContainer.getSwerve().getSwerveDrive().resetOdometry(initialPose.get());
+            }
         }
 
         // Reset and start the timer when the autonomous period begins
@@ -55,6 +60,11 @@ public class Robot extends TimedRobot {
                 robotContainer.getSwerve().followTrajectory(sample.get());
             }
         }
+    }
+
+    @Override
+    public void teleopPeriodic() {
+        robotContainer.controllerDrive();
     }
 
     private boolean isRedAlliance() {
