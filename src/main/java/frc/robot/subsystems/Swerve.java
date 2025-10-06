@@ -63,10 +63,23 @@ public class Swerve extends SubsystemBase {
         field.setRobotPose(swerveDrive.getPose());
     }
 
+    public Pose2d resetOdometry(Pose2d pose) {
+        if (!initialized)
+            return new Pose2d();
+        swerveDrive.resetOdometry(pose);
+        return swerveDrive.getPose();
+    }
+
     // Elastic Stuff
 
     public Field2d getField() {
         return field;
+    }
+
+    public Pose2d getPose() {
+        if (!initialized)
+            return new Pose2d();
+        return swerveDrive.getPose();
     }
 
     public void followTrajectory(SwerveSample sample) {
