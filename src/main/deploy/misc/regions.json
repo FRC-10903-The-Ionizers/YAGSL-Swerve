@@ -1,0 +1,13 @@
+{
+    "region1":
+    {
+        "type": "polygon",
+        "points": [[6.3,2.3], [6.3,5.8], [3,5.8], [3,2.3]]
+    },
+    "region2":
+    {
+        "type": "circle",
+        "center": [5,5],
+        "radius": 3
+    }
+}
