@@ -17,6 +17,8 @@ public class RobotContainer {
     private final Controller controller = new Controller(0);
     private final Controller.SwerveController swerveController = controller.new SwerveController();
     private final RegionHandler regionHandler = new RegionHandler(new File(Filesystem.getDeployDirectory(), "misc/regions.json"));
+    private final Vision vision = new Vision(swerve::addVisionMeasurement);
+
 
     public RobotContainer() {
         SmartDashboard.putData("SwerveField", swerve.getField());
