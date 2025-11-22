@@ -2,7 +2,6 @@ package frc.robot;
 
 import frc.robot.stateSensors.RegionHandler;
 import frc.robot.subsystems.Swerve;
-import frc.robot.subsystems.Vision;
 import frc.robot.util.Controller;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -18,8 +17,6 @@ public class RobotContainer {
     private final Controller controller = new Controller(0);
     private final Controller.SwerveController swerveController = controller.new SwerveController();
     private final RegionHandler regionHandler = new RegionHandler(new File(Filesystem.getDeployDirectory(), "misc/regions.json"));
-    private final Vision vision = new Vision();
-
 
     public RobotContainer() {
         SmartDashboard.putData("SwerveField", swerve.getField());
@@ -43,7 +40,6 @@ public class RobotContainer {
 
         inRegion1.and(inRegion2).onTrue(Commands.runOnce(() -> System.out.println("Robot is in both region1 and region2")));
 
-        
     }
 
     public void controllerDrive() {
@@ -54,7 +50,6 @@ public class RobotContainer {
             swerveController.isFieldRelative(),
             false
         );
-        vision.tryToSeeTag();
     }
 
     public Swerve getSwerve(){
