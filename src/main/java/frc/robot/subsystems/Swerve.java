@@ -62,9 +62,6 @@ public class Swerve extends SubsystemBase {
 
         field.setRobotPose(swerveDrive.getPose());
     }
-    public void drive(double x, double y, double rotation) {
-        swerveDrive.drive(new Translation2d(x, y), rotation, true, false);
-    }
 
     public Pose2d resetOdometry(Pose2d pose) {
         if (!initialized)
