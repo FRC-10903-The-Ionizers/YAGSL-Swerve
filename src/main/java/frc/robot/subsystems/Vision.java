@@ -31,32 +31,32 @@
  import edu.wpi.first.math.geometry.Pose2d;
  import edu.wpi.first.math.numbers.N1;
  import edu.wpi.first.math.numbers.N3;
- import java.util.List;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import java.util.List;
  import java.util.Optional;
  import org.photonvision.EstimatedRobotPose;
  import org.photonvision.PhotonCamera;
  import org.photonvision.PhotonPoseEstimator;
  import org.photonvision.PhotonPoseEstimator.PoseStrategy;
  import org.photonvision.targeting.PhotonTrackedTarget;
- 
- public class Vision {
+
+ public class Vision extends SubsystemBase{
      private final PhotonCamera camera;
      private final PhotonPoseEstimator photonEstimator;
      private Matrix<N3, N1> curStdDevs;
-     private final EstimateConsumer estConsumer;
-  
-     /**
-      * @param estConsumer Lamba that will accept a pose estimate and pass it to your desired {@link
-      *     edu.wpi.first.math.estimator.SwerveDrivePoseEstimator}
-      */
-     public Vision(EstimateConsumer estConsumer) {
-         this.estConsumer = estConsumer;
+     private Swerve swerve;
+
+
+     public Vision(Swerve swerve) {
+        this.swerve = swerve;
          camera = new PhotonCamera(kCameraName);
  
          photonEstimator =
                  new PhotonPoseEstimator(kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCam);
          photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
      }
+
  
      public void periodic() {
          Optional<EstimatedRobotPose> visionEst = Optional.empty();
@@ -69,10 +69,9 @@
                          // Change our trust in the measurement based on the tags we can see
                          var estStdDevs = getEstimationStdDevs();
  
-                         estConsumer.accept(est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
-                     });
+                         swerve.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
+                        });
          }
-         System.out.println("Vision StdDevs: " + curStdDevs);
      }
  
      /**
