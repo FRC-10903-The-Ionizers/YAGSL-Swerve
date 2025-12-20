@@ -1,6 +1,7 @@
 package frc.robot.util;
 
 import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.Constants;
 
 public class Controller {
     private final XboxController controller;
@@ -37,17 +38,17 @@ public class Controller {
 
         /** Get forward/backward, with deadband applied */
         public double getDriveX() {
-            return applyDeadband(-controller.getLeftY());
+            return applyDeadband(-controller.getLeftY()) * Constants.DriveConstants.kControllerDriveMultiplier;
         }
 
         /** Get strafe, with deadband applied */
         public double getDriveY() {
-            return applyDeadband(-controller.getLeftX());
+            return applyDeadband(-controller.getLeftX()) * Constants.DriveConstants.kControllerDriveMultiplier;
         }
 
         /** Get rotation, with deadband applied */
         public double getRotation() {
-            return applyDeadband(-controller.getRightX());
+            return applyDeadband(-controller.getRightX()) * Constants.DriveConstants.kControllerRotationMultiplier;
         }
 
         private double applyDeadband(double value) {
