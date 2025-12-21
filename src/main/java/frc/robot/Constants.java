@@ -10,10 +10,14 @@ import edu.wpi.first.math.numbers.N3;
 
 public class Constants {
     public static class DriveConstants {
-        public static final double kControllerDriveMultiplier = 1.0;
-        public static final double kControllerRotationMultiplier = 2.0;
+        public static final int kNumGears = 6;
+        public static final double kMinDriveMultiplier = 1.0;
+        public static final double kMaxDriveMultiplier = 5.0;
+        public static final double kGearIncrement = (kMaxDriveMultiplier - kMinDriveMultiplier) / kNumGears;
+        public static final double kRotationMultiplier = 4.0;
         public static final double autoDriveMultiplier = 4.5;
     }
+
     public static class Vision {
         public static String kCameraName = "Arducam_OV9281_USB_Camera";
         public static Transform3d kRobotToCam = new Transform3d();

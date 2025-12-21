@@ -8,7 +8,7 @@ import frc.robot.Constants;
 public class Controller {
     private final XboxController controller;
     private final CommandXboxController commandController;
-    private double speedMult = 0.6;
+    private double speedMult = Constants.DriveConstants.kMinDriveMultiplier;
 
     public Controller(int port) {
         controller = new XboxController(port);
@@ -42,14 +42,14 @@ public class Controller {
     }
 
     public void upshift(){
-        speedMult+=0.2;
-        if (speedMult > 1){
-            speedMult = 1;
+        speedMult += Constants.DriveConstants.kGearIncrement;
+        if (speedMult > Constants.DriveConstants.kMaxDriveMultiplier){
+            speedMult = Constants.DriveConstants.kMaxDriveMultiplier;
         }
     }
 
     public void downshift(){
-        speedMult-=0.2;
+        speedMult -= Constants.DriveConstants.kGearIncrement;
         if (speedMult < 0){
             speedMult = 0;
         }
@@ -57,17 +57,17 @@ public class Controller {
 
     /** Get forward/backward, with deadband applied */
     public double getDriveX() {
-        return applyDeadband(-controller.getLeftY()) * Constants.DriveConstants.kControllerDriveMultiplier;
+        return applyDeadband(-controller.getLeftY()) * speedMult;
     }
 
     /** Get strafe, with deadband applied */
     public double getDriveY() {
-        return applyDeadband(-controller.getLeftX()) * Constants.DriveConstants.kControllerDriveMultiplier;
+        return applyDeadband(-controller.getLeftX()) * speedMult;
     }
 
     /** Get rotation, with deadband applied */
     public double getRotation() {
-        return applyDeadband(-controller.getRightX()) * Constants.DriveConstants.kControllerRotationMultiplier;
+        return applyDeadband(-controller.getRightX()) * Constants.DriveConstants.kRotationMultiplier;
     }
 
     private double applyDeadband(double value) {
@@ -75,7 +75,7 @@ public class Controller {
         return Math.abs(value) > deadband ? value : 0.0;
     }
 
-    public void bind(){
+    public void bind() {
         commandController.leftStick().onChange(new InstantCommand(this::toggleFieldRelative));
         commandController.leftBumper().onTrue(new InstantCommand(this::downshift));
         commandController.rightBumper().onTrue(new InstantCommand(this::upshift));
