@@ -11,6 +11,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import java.io.File;
 
+import frc.robot.subsystems.ObjectDetection;
+import frc.robot.subsystems.Vision;
+
 
 public class RobotContainer {
     private final Swerve swerve = new Swerve();
@@ -18,6 +21,7 @@ public class RobotContainer {
     private final Controller.SwerveController swerveController = controller.new SwerveController();
     private final RegionHandler regionHandler = new RegionHandler(new File(Filesystem.getDeployDirectory(), "misc/regions.json"));
     private final Vision vision = new Vision(swerve);
+    private final ObjectDetection detections = new ObjectDetection(swerve);
 
 
     public RobotContainer() {
