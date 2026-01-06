@@ -8,13 +8,16 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.subsystems.Vision; // we were missing this import - i dont think vision was running this whole time :)
 import java.io.File;
+import frc.robot.commands.AlignToAprilTag;
 
 
 public class RobotContainer {
     private final Swerve swerve = new Swerve();
     private final Controller controller = new Controller(0);
+    CommandXboxController xboxController = new CommandXboxController(0);
     private final Controller.SwerveController swerveController = controller.new SwerveController();
     private final RegionHandler regionHandler = new RegionHandler(new File(Filesystem.getDeployDirectory(), "misc/regions.json"));
     private final Vision vision = new Vision(swerve);
@@ -41,6 +44,8 @@ public class RobotContainer {
                  .onFalse(Commands.runOnce(() -> System.out.println("Robot left region2")));
 
         inRegion1.and(inRegion2).onTrue(Commands.runOnce(() -> System.out.println("Robot is in both region1 and region2")));
+
+        xboxController.rightTrigger().whileTrue(new AlignToAprilTag(swerve, vision)); // align
 
     }
 

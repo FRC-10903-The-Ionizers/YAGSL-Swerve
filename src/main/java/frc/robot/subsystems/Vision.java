@@ -122,13 +122,35 @@ import java.util.List;
              }
          }
      }
- 
+     
      /**
       * Returns the latest standard deviations of the estimated pose from {@link
       * #getEstimatedGlobalPose()}, for use with {@link
       * edu.wpi.first.math.estimator.SwerveDrivePoseEstimator SwerveDrivePoseEstimator}. This should
       * only be used when there are targets visible.
       */
+
+     public PhotonTrackedTarget getClosestAprilTagYaw() {
+        var results = camera.getAllUnreadResults();
+        double targetYaw = 0.0;
+        
+        if (!results.isEmpty()) {
+            PhotonTrackedTarget closestTarget = null;
+            // Camera processed a new frame since last
+            // Get the last one in the list.
+            var result = results.get(results.size() - 1);
+            double closestYawDiff = Double.MAX_VALUE; // this is a java thing apparently, im very cool
+            for (var target : result.getTargets()) {
+                double yawDiff = Math.abs(target.getYaw() - targetYaw);
+                if (yawDiff < closestYawDiff) {
+                    closestYawDiff = yawDiff;
+                    closestTarget = target;
+                }
+            }
+            return closestTarget;
+        }
+        return null;
+    }
      public Matrix<N3, N1> getEstimationStdDevs() {
          return curStdDevs;
      }
