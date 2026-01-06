@@ -13,10 +13,11 @@ public class Constants {
         public static final double kControllerDriveMultiplier = 1.0;
         public static final double kControllerRotationMultiplier = 2.0;
         public static final double autoDriveMultiplier = 4.5;
+        public static final double kMaxTurnRate = 1.0; // no clue what this should be - we'll figure it out ig
     }
     public static class Vision {
         public static String kCameraName = "Arducam_OV9281_USB_Camera";
-        public static Transform3d kRobotToCam = new Transform3d();
+        public static Transform3d kRobotToCam = new Transform3d(); // note that at some point we will need to change this to the actual transform from the robot to the camera
         public static AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);;
 
         public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
