@@ -14,27 +14,26 @@ public class LockToPoint extends Command {
   private final double targetPointX;
   private final double targetPointY;
   private double target_angle;
+
   public LockToPoint (Swerve subsystem, double targetPointX, double targetPointY) {
     swerve = subsystem;
     this.targetPointX = targetPointX;
     this.targetPointY = targetPointY;
   }
-  public void initialize() {
-  }
+
   public void execute() {
     //get position
     Pose2d currentPosition = swerve.getPose();
     double currentX = currentPosition.getX();
     double currentY = currentPosition.getY();
     // log current position
-    System.out.println("current x: " + currentX);
-    System.out.println("current y: " + currentY);
+    System.out.println("Current X: " + currentX);
+    System.out.println("Current Y: " + currentY);
     
-    // get angle difference
-    target_angle = Math.atan((targetPointX-currentX)/(targetPointY-currentY));
+    target_angle = Math.atan2(targetPointY - currentY, targetPointX - currentX);
     System.out.println(target_angle);
 
-    // set the robot's target angle
-    swerve.setTargetAngle(target_angle);
+    // set the robot's target angle  - rad to deg
+    swerve.setTargetAngle(Math.toDegrees(target_angle));
   }
 }

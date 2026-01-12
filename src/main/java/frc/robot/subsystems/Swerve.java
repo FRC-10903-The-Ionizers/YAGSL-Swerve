@@ -35,7 +35,7 @@ public class Swerve extends SubsystemBase {
 
     private final PIDController xController = new PIDController(1, 0.0, 0.1);
     private final PIDController yController = new PIDController(1, 0.0, 0.1);
-    private final PIDController headingController = new PIDController(.75, 0.0, 0.05);
+    private final PIDController headingController = new PIDController(4, 0.01, 0.05);
 
     public Swerve() {
         try {
