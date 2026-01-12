@@ -1,5 +1,6 @@
 package frc.robot;
 
+import frc.robot.commands.LockToPoint;
 import frc.robot.stateSensors.RegionHandler;
 import frc.robot.subsystems.Swerve;
 import frc.robot.util.Controller;
@@ -9,22 +10,27 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import java.io.File;
 
 
 
 public class RobotContainer {
     private final Swerve swerve = new Swerve();
+    
+
     private final Controller controller = new Controller(0);
     private final Controller.SwerveController swerveController = controller.new SwerveController();
     private final RegionHandler regionHandler = new RegionHandler(new File(Filesystem.getDeployDirectory(), "misc/regions.json"));
     private final Vision vision = new Vision(swerve);
-
+    CommandXboxController xboxController = new CommandXboxController(0);
 
     public RobotContainer() {
         SmartDashboard.putData("SwerveField", swerve.getField());
         System.out.println(regionHandler.getAllRegionNames());
+        // when u hit a, we start running lock to point
 
+        xboxController.a().whileTrue(new LockToPoint(swerve, 11.855, 4.04));
         Trigger inRegion1 = new Trigger(() -> {
             boolean isInRegion = regionHandler.inRegion("region1", swerve.getPose());
             return isInRegion;

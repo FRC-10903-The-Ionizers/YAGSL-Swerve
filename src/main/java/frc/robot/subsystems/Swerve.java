@@ -102,6 +102,13 @@ public class Swerve extends SubsystemBase {
         swerveDrive.drive(new Translation2d(xSpeed, ySpeed), rotation, true, false);  
     }
 
+    public void setTargetAngle(double targetAngle) {
+        headingController.setSetpoint(Math.toRadians(targetAngle));
+        //calculate the output
+        double output = headingController.calculate(swerveDrive.getPose().getRotation().getRadians());
+        swerveDrive.drive(new Translation2d(0, 0), output, true, false);
+    }
+
     public SwerveDrive getSwerveDrive() {
         return swerveDrive;
     }
