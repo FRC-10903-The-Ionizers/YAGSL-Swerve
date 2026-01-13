@@ -26,7 +26,7 @@ import frc.robot.Constants;
      private Matrix<N3, N1> curStdDevs;
      private Swerve swerve;
      private double yaw;
-
+     private boolean objectDetectionOn = false;
      public ObjectDetection(Swerve swerve) {
         this.swerve = swerve;
         camera = new PhotonCamera(Constants.Vision.kCameraName);
@@ -36,20 +36,23 @@ import frc.robot.Constants;
         photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
      }
 
- 
+     public void ObjectDetectionToggle() {
+        objectDetectionOn = !objectDetectionOn;
+     }
      public void periodic() {
-        Optional<EstimatedRobotPose> visionEst = Optional.empty();
-        var result = camera.getLatestResult();
-        boolean hasTargets = result.hasTargets();
-        System.out.print(result);
+      if (objectDetectionOn) {
+         Optional<EstimatedRobotPose> visionEst = Optional.empty();
+         var result = camera.getLatestResult();
+         boolean hasTargets = result.hasTargets();
+         System.out.print(result);
 
-        if (hasTargets) {
-         PhotonTrackedTarget bestTarget = result.getBestTarget();
-         double yaw = bestTarget.getYaw();
-         System.out.println("Yaw: " + yaw);
+         if (hasTargets) {
+            PhotonTrackedTarget bestTarget = result.getBestTarget();
+            double yaw = bestTarget.getYaw();
+            System.out.println("Yaw: " + yaw);
+         }
       }
       // yaw relative to the robot
       swerve.setTargetAngle(yaw + swerve.getPose().getRotation().getDegrees());
-        
-    }
+      }
  }

@@ -8,11 +8,13 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import java.io.File;
 
 import frc.robot.subsystems.ObjectDetection;
 import frc.robot.subsystems.Vision;
+import frc.robot.commands.ObjectDetectionCommand;
 
 
 public class RobotContainer {
@@ -22,11 +24,15 @@ public class RobotContainer {
     private final RegionHandler regionHandler = new RegionHandler(new File(Filesystem.getDeployDirectory(), "misc/regions.json"));
     private final Vision vision = new Vision(swerve);
     private final ObjectDetection detections = new ObjectDetection(swerve);
+    CommandXboxController xboxController = new CommandXboxController(0);
 
 
     public RobotContainer() {
         SmartDashboard.putData("SwerveField", swerve.getField());
         System.out.println(regionHandler.getAllRegionNames());
+
+        xboxController.b().toggleOnTrue(new ObjectDetectionCommand(detections));
+
 
         Trigger inRegion1 = new Trigger(() -> {
             boolean isInRegion = regionHandler.inRegion("region1", swerve.getPose());
