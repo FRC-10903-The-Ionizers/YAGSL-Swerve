@@ -6,7 +6,7 @@
  import edu.wpi.first.math.numbers.N1;
  import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import org.photonvision.targeting.PhotonTrackedTarget;
 import static frc.robot.Constants.Vision.kRobotToCam;
 
 import java.util.List;
@@ -25,6 +25,7 @@ import frc.robot.Constants;
      private final PhotonPoseEstimator photonEstimator;
      private Matrix<N3, N1> curStdDevs;
      private Swerve swerve;
+     private double yaw;
 
      public ObjectDetection(Swerve swerve) {
         this.swerve = swerve;
@@ -41,5 +42,14 @@ import frc.robot.Constants;
         var result = camera.getLatestResult();
         boolean hasTargets = result.hasTargets();
         System.out.print(result);
-     }
+
+        if (hasTargets) {
+         PhotonTrackedTarget bestTarget = result.getBestTarget();
+         double yaw = bestTarget.getYaw();
+         System.out.println("Yaw: " + yaw);
+      }
+      // yaw relative to the robot
+      swerve.setTargetAngle(yaw + swerve.getPose().getRotation().getDegrees());
+        
+    }
  }

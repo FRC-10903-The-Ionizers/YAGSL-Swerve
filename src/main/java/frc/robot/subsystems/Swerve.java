@@ -35,7 +35,7 @@ public class Swerve extends SubsystemBase {
 
     private final PIDController xController = new PIDController(1, 0.0, 0.1);
     private final PIDController yController = new PIDController(1, 0.0, 0.1);
-    private final PIDController headingController = new PIDController(.75, 0.0, 0.05);
+    private final PIDController headingController = new PIDController(4, 0.01, 0.05);
 
     public Swerve() {
         try {
@@ -104,6 +104,13 @@ public class Swerve extends SubsystemBase {
 
     public SwerveDrive getSwerveDrive() {
         return swerveDrive;
+    }
+
+    public void setTargetAngle(double targetAngle) {
+        headingController.setSetpoint(Math.toRadians(targetAngle));
+        //calculate the output
+        double output = headingController.calculate(swerveDrive.getPose().getRotation().getRadians());
+        swerveDrive.drive(new Translation2d(0, 0), output, true, false);
     }
 
     public void addVisionMeasurement(Pose2d visionPose, double timestamp, Matrix<N3, N1> estimationStdDevs) {
