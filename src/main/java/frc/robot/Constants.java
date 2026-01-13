@@ -15,7 +15,9 @@ public class Constants {
         public static final double autoDriveMultiplier = 4.5;
     }
     public static class Vision {
-        public static String kCameraName = "Arducam_OV9281_USB_Camera";
+        public static String kCameraName_April = "Arducam_OV9281_USB_Camera";
+        public static String kCameraName_Object = "Arducam_OV9782_USB_Camera";
+
         public static Transform3d kRobotToCam = new Transform3d();
         public static AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);;
 

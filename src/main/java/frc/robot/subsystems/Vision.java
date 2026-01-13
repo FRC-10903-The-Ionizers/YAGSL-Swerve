@@ -42,7 +42,8 @@ import java.util.List;
  import org.photonvision.targeting.PhotonTrackedTarget;
 
  public class Vision extends SubsystemBase{
-     private final PhotonCamera camera;
+     private final PhotonCamera april_camera;
+     private final PhotonCamera object_camera;
      private final PhotonPoseEstimator photonEstimator;
      private Matrix<N3, N1> curStdDevs;
      private Swerve swerve;
@@ -50,7 +51,8 @@ import java.util.List;
 
      public Vision(Swerve swerve) {
         this.swerve = swerve;
-         camera = new PhotonCamera(kCameraName);
+         april_camera = new PhotonCamera(kCameraName_April);
+         object_camera = new PhotonCamera(kCameraName_Object);
  
          photonEstimator =
                  new PhotonPoseEstimator(kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCam);
@@ -59,10 +61,8 @@ import java.util.List;
 
  
      public void periodic() {
-         System.out.println("we are running vision!");
-         System.out.println(camera.getAllUnreadResults());
          Optional<EstimatedRobotPose> visionEst = Optional.empty();
-         for (var change : camera.getAllUnreadResults()) {
+         for (var change : april_camera.getAllUnreadResults()) {
              visionEst = photonEstimator.update(change);
              updateEstimationStdDevs(visionEst, change.getTargets());
  
@@ -74,6 +74,10 @@ import java.util.List;
                          swerve.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
                         });
          }
+        System.out.println("running objects");
+        // if results exists, printall results
+        System.out.println(object_camera.getAllUnreadResults());
+
      }
  
      /**
