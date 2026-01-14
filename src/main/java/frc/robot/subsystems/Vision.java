@@ -53,7 +53,7 @@ import frc.robot.Constants;
 
      public Vision(Swerve swerve) {
         this.swerve = swerve;
-        camera = new PhotonCamera(Constants.Vision.kCameraName);
+        camera = new PhotonCamera(Constants.Vision.aprilCameraName);
 
         photonEstimator =
                 new PhotonPoseEstimator(Constants.Vision.kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCam);

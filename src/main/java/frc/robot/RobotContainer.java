@@ -52,13 +52,15 @@ public class RobotContainer {
     }
 
     public void controllerDrive() {
-        Translation2d driveTranslation = new Translation2d(swerveController.getDriveX(), swerveController.getDriveY());
-        swerve.getSwerveDrive().drive(
-            driveTranslation,
-            swerveController.getRotation(),
-            swerveController.isFieldRelative(),
-            false
-        );
+        if (!detections.getDetectionOn()){
+            Translation2d driveTranslation = new Translation2d(swerveController.getDriveX(), swerveController.getDriveY());
+            swerve.getSwerveDrive().drive(
+                driveTranslation,
+                swerveController.getRotation(),
+                swerveController.isFieldRelative(),
+                false
+            );
+        }
     }
 
     public Swerve getSwerve(){
