@@ -62,6 +62,7 @@ import frc.robot.Constants;
 
  
      public void periodic() {
+
          Optional<EstimatedRobotPose> visionEst = Optional.empty();
          for (var change : camera.getAllUnreadResults()) {
              visionEst = photonEstimator.update(change);
@@ -71,7 +72,7 @@ import frc.robot.Constants;
                      est -> {
                          // Change our trust in the measurement based on the tags we can see
                          var estStdDevs = getEstimationStdDevs();
- 
+
                          swerve.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
                         });
          }
