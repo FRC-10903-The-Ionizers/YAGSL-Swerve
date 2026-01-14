@@ -14,6 +14,7 @@ public class ObjectDetectionCommand extends Command {
   }
 
   public void execute() {
+    System.out.println("wow");
     objectDetection.ObjectDetectionToggle();
   }
 }

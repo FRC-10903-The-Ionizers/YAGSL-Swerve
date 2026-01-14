@@ -51,8 +51,8 @@ import frc.robot.Constants;
             double yaw = bestTarget.getYaw();
             System.out.println("Yaw: " + yaw);
          }
+         // yaw relative to the robot
+         swerve.setTargetAngle(yaw + swerve.getPose().getRotation().getDegrees());
       }
-      // yaw relative to the robot
-      swerve.setTargetAngle(yaw + swerve.getPose().getRotation().getDegrees());
       }
  }

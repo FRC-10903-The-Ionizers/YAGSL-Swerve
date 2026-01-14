@@ -26,13 +26,11 @@ public class RobotContainer {
     private final ObjectDetection detections = new ObjectDetection(swerve);
     CommandXboxController xboxController = new CommandXboxController(0);
 
-
     public RobotContainer() {
         SmartDashboard.putData("SwerveField", swerve.getField());
         System.out.println(regionHandler.getAllRegionNames());
 
         xboxController.b().toggleOnTrue(new ObjectDetectionCommand(detections));
-
 
         Trigger inRegion1 = new Trigger(() -> {
             boolean isInRegion = regionHandler.inRegion("region1", swerve.getPose());
