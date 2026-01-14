@@ -8,7 +8,7 @@
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import static frc.robot.Constants.Vision.kRobotToCam;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.util.List;
  import java.util.Optional;
 
@@ -29,7 +29,7 @@ import frc.robot.Constants;
      private boolean objectDetectionOn = false;
      public ObjectDetection(Swerve swerve) {
         this.swerve = swerve;
-        camera = new PhotonCamera(Constants.Vision.kCameraName);
+        camera = new PhotonCamera(Constants.Vision.objectCameraName);
 
         photonEstimator =
                 new PhotonPoseEstimator(Constants.Vision.kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCam);
@@ -40,19 +40,29 @@ import frc.robot.Constants;
         objectDetectionOn = !objectDetectionOn;
      }
      public void periodic() {
-      if (objectDetectionOn) {
-         Optional<EstimatedRobotPose> visionEst = Optional.empty();
-         var result = camera.getLatestResult();
-         boolean hasTargets = result.hasTargets();
-         //System.out.print(result);
-         System.out.print("object detection activated");
-         if (hasTargets) {
-            PhotonTrackedTarget bestTarget = result.getBestTarget();
-            double yaw = bestTarget.getYaw();
-            System.out.println("Yaw: " + yaw);
+         if (objectDetectionOn) {
+            Optional<EstimatedRobotPose> visionEst = Optional.empty();
+            var result = camera.getLatestResult();
+            boolean hasTargets = result.hasTargets();
+            //System.out.print(result);
+            //System.out.println("object detection activated");
+            if (hasTargets) {
+               PhotonTrackedTarget bestTarget = result.getBestTarget();
+               System.out.println("nice! we have targets");
+               double yaw = bestTarget.getYaw();
+               swerve.setRelativeTargetAngle(yaw); // + swerve.getPose().getRotation().getDegrees()
+               SmartDashboard.putNumber("Target Angle", yaw);
+               //System.out.println("Yaw diff: ()" + (yaw + swerve.getPose().getRotation().getDegrees()));
+            }
+            else {
+               swerve.setRelativeTargetAngle(0);
+            }
+            // yaw relative to the robot
          }
-         // yaw relative to the robot
-         swerve.setTargetAngle(yaw + swerve.getPose().getRotation().getDegrees());
-      }
-      }
- }
+      
+   }
+
+   public boolean getDetectionOn(){
+      return objectDetectionOn;
+   }
+}
