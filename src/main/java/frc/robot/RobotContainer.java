@@ -14,7 +14,6 @@ import java.io.File;
 
 import frc.robot.subsystems.ObjectDetection;
 import frc.robot.subsystems.Vision;
-import frc.robot.commands.ObjectDetectionCommand;
 
 
 public class RobotContainer {
@@ -30,7 +29,7 @@ public class RobotContainer {
         SmartDashboard.putData("SwerveField", swerve.getField());
         System.out.println(regionHandler.getAllRegionNames());
 
-        xboxController.b().toggleOnTrue(new ObjectDetectionCommand(detections));
+        xboxController.b().onTrue(Commands.runOnce(() -> detections.objectDetectionToggle(), detections));
 
         Trigger inRegion1 = new Trigger(() -> {
             boolean isInRegion = regionHandler.inRegion("region1", swerve.getPose());

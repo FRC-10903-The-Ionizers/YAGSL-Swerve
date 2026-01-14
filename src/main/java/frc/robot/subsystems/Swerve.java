@@ -114,12 +114,12 @@ public class Swerve extends SubsystemBase {
     }
 
     public void addVisionMeasurement(Pose2d visionPose, double timestamp, Matrix<N3, N1> estimationStdDevs) {
-        System.out.println("Pose Recieved! " + visionPose.toString());
         if (!initialized){
             return;
         }
-        // swerveDrive.resetOdometry(visionPose);
+        
         swerveDrive.addVisionMeasurement(visionPose, timestamp, estimationStdDevs);
+        swerveDrive.resetOdometry(visionPose);
     }
 
 }

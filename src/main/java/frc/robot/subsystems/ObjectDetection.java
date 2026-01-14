@@ -36,7 +36,7 @@ import frc.robot.Constants;
         photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
      }
 
-     public void ObjectDetectionToggle() {
+     public void objectDetectionToggle() {
         objectDetectionOn = !objectDetectionOn;
      }
      public void periodic() {
@@ -44,8 +44,8 @@ import frc.robot.Constants;
          Optional<EstimatedRobotPose> visionEst = Optional.empty();
          var result = camera.getLatestResult();
          boolean hasTargets = result.hasTargets();
-         System.out.print(result);
-
+         //System.out.print(result);
+         System.out.print("object detection activated");
          if (hasTargets) {
             PhotonTrackedTarget bestTarget = result.getBestTarget();
             double yaw = bestTarget.getYaw();
