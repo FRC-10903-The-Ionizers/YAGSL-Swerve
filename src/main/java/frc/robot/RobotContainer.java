@@ -1,6 +1,7 @@
 package frc.robot;
 
 import frc.robot.stateSensors.RegionHandler;
+import frc.robot.subsystems.ObjectDetection;
 import frc.robot.subsystems.Swerve;
 import frc.robot.util.Controller;
 import frc.robot.subsystems.Vision;
@@ -22,6 +23,7 @@ public class RobotContainer {
     private final RegionHandler regionHandler = new RegionHandler(new File(Filesystem.getDeployDirectory(), "misc/regions.json"));
     private final Vision vision = new Vision(swerve);
     CommandXboxController xboxController = new CommandXboxController(0);
+    private final ObjectDetection detections = new ObjectDetection(swerve);
 
     public RobotContainer() {
         SmartDashboard.putData("SwerveField", swerve.getField());
