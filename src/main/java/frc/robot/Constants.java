@@ -16,8 +16,11 @@ public class Constants {
         public static final double kMaxTurnRate = 1.0; // no clue what this should be - we'll figure it out ig
     }
     public static class Vision {
-        public static String kCameraName = "Arducam_OV9281_USB_Camera";
-        public static Transform3d kRobotToCam = new Transform3d(); // note that at some point we will need to change this to the actual transform from the robot to the camera
+        public static String kCameraName_April = "Arducam_OV9281_USB_Camera";
+        public static String kCameraName_Object = "Arducam_OV9782_USB_Camera";
+
+        public static Transform3d kRobotToCam = new Transform3d();
+
         public static AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);;
 
         public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
