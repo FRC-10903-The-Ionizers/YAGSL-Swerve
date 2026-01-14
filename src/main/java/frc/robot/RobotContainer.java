@@ -23,7 +23,7 @@ public class RobotContainer {
     private final RegionHandler regionHandler = new RegionHandler(new File(Filesystem.getDeployDirectory(), "misc/regions.json"));
     private final Vision vision = new Vision(swerve);
     CommandXboxController xboxController = new CommandXboxController(0);
-    private final ObjectDetection detections = new ObjectDetection(swerve);
+    private final ObjectDetection detections = new ObjectDetection();
 
     public RobotContainer() {
         SmartDashboard.putData("SwerveField", swerve.getField());
