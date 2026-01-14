@@ -1,19 +1,18 @@
 package frc.robot;
 
-import frc.robot.commands.LockToPoint;
 import frc.robot.stateSensors.RegionHandler;
 import frc.robot.subsystems.Swerve;
 import frc.robot.util.Controller;
 import frc.robot.subsystems.Vision;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import java.io.File;
-
-
 
 public class RobotContainer {
     private final Swerve swerve = new Swerve();
@@ -30,7 +29,8 @@ public class RobotContainer {
         System.out.println(regionHandler.getAllRegionNames());
         // when u hit a, we start running lock to point
 
-        xboxController.a().whileTrue(new LockToPoint(swerve, 11.855, 4.04));
+        xboxController.a().onTrue(new InstantCommand(() -> {swerve.turnOnLock(new Pose2d());}));
+        xboxController.x().onTrue(new InstantCommand(() -> {swerve.turnOffLock();}));
         Trigger inRegion1 = new Trigger(() -> {
             boolean isInRegion = regionHandler.inRegion("region1", swerve.getPose());
             return isInRegion;
@@ -53,11 +53,10 @@ public class RobotContainer {
 
     public void controllerDrive() {
         Translation2d driveTranslation = new Translation2d(swerveController.getDriveX(), swerveController.getDriveY());
-        swerve.getSwerveDrive().drive(
+        swerve.drive(
             driveTranslation,
             swerveController.getRotation(),
-            swerveController.isFieldRelative(),
-            false
+            swerveController.isFieldRelative()
         );
     }
 

@@ -24,7 +24,7 @@ import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
 import java.io.Console;
-    import java.io.File;
+import java.io.File;
 
 import choreo.trajectory.SwerveSample;
 
@@ -36,6 +36,9 @@ public class Swerve extends SubsystemBase {
     private final PIDController xController = new PIDController(1, 0.0, 0.1);
     private final PIDController yController = new PIDController(1, 0.0, 0.1);
     private final PIDController headingController = new PIDController(4, 0.01, 0.05);
+
+    private boolean isLockToPoint = false;
+    private Pose2d targetPose;
 
     public Swerve() {
         try {
@@ -57,6 +60,7 @@ public class Swerve extends SubsystemBase {
             DriverStation.reportError("Failed to load swerve configuration from /deploy/swerve: " + e.getMessage(),
                     e.getStackTrace());
         }
+        swerveDrive.resetOdometry(new Pose2d());
     }
 
     public void periodic() {
@@ -82,6 +86,7 @@ public class Swerve extends SubsystemBase {
     public Pose2d getPose() {
         if (!initialized)
             return new Pose2d();
+            
         return swerveDrive.getPose();
     }
 
@@ -103,6 +108,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public void setTargetAngle(double targetAngle) {
+        //Makes robot stationary
         headingController.setSetpoint(Math.toRadians(targetAngle));
         //calculate the output
         double output = headingController.calculate(swerveDrive.getPose().getRotation().getRadians());
@@ -122,4 +128,41 @@ public class Swerve extends SubsystemBase {
         swerveDrive.addVisionMeasurement(visionPose, timestamp, estimationStdDevs);
     }
 
+    public void turnOnLock(Pose2d targetPose) {
+        System.out.println("a pressed");
+        isLockToPoint = true;
+        this.targetPose = targetPose;
+    }
+
+    public void turnOffLock(){
+        isLockToPoint = false;
+    }
+
+    public double lockToPoint(double targetPointX, double targetPointY) {
+        //get position
+        Pose2d currentPosition = swerveDrive.getPose();
+        double currentX = currentPosition.getX();
+        double currentY = currentPosition.getY();
+        // log current position
+        System.out.println("Current X: " + currentX);
+        System.out.println("Current Y: " + currentY);
+        
+        double target_angle = Math.atan2(targetPointY - currentY, targetPointX - currentX);
+        System.out.println(target_angle);
+
+        // set the robot's target angle  - rad to deg
+        return target_angle;
+  }
+
+  public void drive(Translation2d translation, double rotation, boolean isFieldRelative){
+    System.out.println();
+    if(isLockToPoint){
+        System.out.println("Ready to lock in / on.");
+        double targetAngle = lockToPoint(targetPose.getX(), targetPose.getY());
+        headingController.setSetpoint(targetAngle);
+        rotation = headingController.calculate(swerveDrive.getPose().getRotation().getRadians());
+    }
+ 
+    swerveDrive.drive(translation, rotation, isFieldRelative, false);
+  }
 }
