@@ -1,65 +1,50 @@
- package frc.robot.subsystems;
- 
- import edu.wpi.first.math.Matrix;
- import edu.wpi.first.math.VecBuilder;
- import edu.wpi.first.math.geometry.Pose2d;
- import edu.wpi.first.math.numbers.N1;
- import edu.wpi.first.math.numbers.N3;
+package frc.robot.subsystems;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import static frc.robot.Constants.Vision.kRobotToCam;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import java.util.List;
- import java.util.Optional;
 
- import org.photonvision.EstimatedRobotPose;
- import org.photonvision.PhotonCamera;
- import org.photonvision.PhotonPoseEstimator;
- import org.photonvision.PhotonPoseEstimator.PoseStrategy;
- import org.photonvision.targeting.PhotonTrackedTarget;
+import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 import frc.robot.Constants;
 
- public class ObjectDetection extends SubsystemBase {
-     private final PhotonCamera camera;
-     private final PhotonPoseEstimator photonEstimator;
-     private Matrix<N3, N1> curStdDevs;
-     private Swerve swerve;
-     private double yaw;
-     private boolean objectDetectionOn = false;
-     public ObjectDetection(Swerve swerve) {
-        this.swerve = swerve;
-        camera = new PhotonCamera(Constants.Vision.objectCameraName);
+public class ObjectDetection extends SubsystemBase {
+   private final PhotonCamera camera;
+   private final PhotonPoseEstimator photonEstimator;
+   private double yaw;
+   private boolean currentlyTracking = false;
+   private boolean objectDetectionOn = false;
+   public ObjectDetection() {
+      camera = new PhotonCamera(Constants.Vision.objectCameraName);
 
-        photonEstimator =
-                new PhotonPoseEstimator(Constants.Vision.kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCam);
-        photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
-     }
+      photonEstimator =
+               new PhotonPoseEstimator(Constants.Vision.kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCam);
+      photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+   }
+   public void periodic() {
+      var result = camera.getLatestResult();
+      boolean hasTargets = result.hasTargets();
+      //System.out.print(result);
+      //System.out.println("object detection activated");
+      if (hasTargets) {
+         PhotonTrackedTarget bestTarget = result.getBestTarget();
+         yaw = bestTarget.getYaw();
+         // swerve.setRelativeTargetAngle(yaw);
+         // SmartDashboard.putNumber("Target Angle", yaw);
+         currentlyTracking = true;
+      }
+      else {
+         currentlyTracking = false;
+      }
+   }
 
-     public void objectDetectionToggle() {
-        objectDetectionOn = !objectDetectionOn;
-     }
-     public void periodic() {
-         if (objectDetectionOn) {
-            Optional<EstimatedRobotPose> visionEst = Optional.empty();
-            var result = camera.getLatestResult();
-            boolean hasTargets = result.hasTargets();
-            //System.out.print(result);
-            //System.out.println("object detection activated");
-            if (hasTargets) {
-               PhotonTrackedTarget bestTarget = result.getBestTarget();
-               System.out.println("nice! we have targets");
-               double yaw = bestTarget.getYaw();
-               swerve.setRelativeTargetAngle(yaw); // + swerve.getPose().getRotation().getDegrees()
-               SmartDashboard.putNumber("Target Angle", yaw);
-               //System.out.println("Yaw diff: ()" + (yaw + swerve.getPose().getRotation().getDegrees()));
-            }
-            else {
-               swerve.setRelativeTargetAngle(0);
-            }
-            // yaw relative to the robot
-         }
-      
+   public double getYaw() {
+      if (!currentlyTracking){
+         return 10903;
+      }
+      return yaw;
    }
 
    public boolean getDetectionOn(){

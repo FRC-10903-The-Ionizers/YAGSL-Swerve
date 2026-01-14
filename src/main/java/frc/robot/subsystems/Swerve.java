@@ -164,17 +164,17 @@ public class Swerve extends SubsystemBase {
 
         // set the robot's target angle  - rad to deg
         return target_angle;
-  }
+    }
 
-  public void drive(Translation2d translation, double rotation, boolean isFieldRelative){
-    System.out.println();
-    if(isLockToPoint){
-        System.out.println("Ready to lock in / on.");
+    public void driveWhileLocked(Translation2d translation, boolean isFieldRelative, Pose2d targetPose){
+        System.out.println("Driving while locked");
         double targetAngle = lockToPoint(targetPose.getX(), targetPose.getY());
         headingController.setSetpoint(targetAngle);
-        rotation = headingController.calculate(swerveDrive.getPose().getRotation().getRadians());
+        double rotation = headingController.calculate(swerveDrive.getPose().getRotation().getRadians());
+        swerveDrive.drive(translation, rotation, isFieldRelative, false);
     }
- 
-    swerveDrive.drive(translation, rotation, isFieldRelative, false);
-  }
+
+    public void drive(Translation2d translation, double rotation, boolean isFieldRelative){
+        swerveDrive.drive(translation, rotation, isFieldRelative, false);
+    }
 }
