@@ -119,13 +119,20 @@ public class Swerve extends SubsystemBase {
         return swerveDrive;
     }
 
+    public void setTargetAngle(double targetAngle) {
+        headingController.setSetpoint(Math.toRadians(targetAngle));
+        //calculate the output
+        double output = headingController.calculate(swerveDrive.getPose().getRotation().getRadians());
+        swerveDrive.drive(new Translation2d(0, 0), output, true, false);
+    }
+
     public void addVisionMeasurement(Pose2d visionPose, double timestamp, Matrix<N3, N1> estimationStdDevs) {
-        System.out.println("Pose Recieved! " + visionPose.toString());
         if (!initialized){
             return;
         }
-        // swerveDrive.resetOdometry(visionPose);
+        
         swerveDrive.addVisionMeasurement(visionPose, timestamp, estimationStdDevs);
+        swerveDrive.resetOdometry(visionPose);
     }
 
     public void turnOnLock(Pose2d targetPose) {
