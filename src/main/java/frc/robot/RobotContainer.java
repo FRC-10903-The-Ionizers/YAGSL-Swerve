@@ -1,6 +1,7 @@
 package frc.robot;
 
 import frc.robot.stateSensors.RegionHandler;
+import frc.robot.subsystems.ObjectDetection;
 import frc.robot.subsystems.Swerve;
 import frc.robot.util.Controller;
 import frc.robot.subsystems.Vision;
@@ -23,6 +24,7 @@ public class RobotContainer {
     private final RegionHandler regionHandler = new RegionHandler(new File(Filesystem.getDeployDirectory(), "misc/regions.json"));
     private final Vision vision = new Vision(swerve);
     CommandXboxController xboxController = new CommandXboxController(0);
+    private final ObjectDetection detections = new ObjectDetection(swerve);
 
     public RobotContainer() {
         SmartDashboard.putData("SwerveField", swerve.getField());
@@ -31,6 +33,7 @@ public class RobotContainer {
 
         xboxController.a().onTrue(new InstantCommand(() -> {swerve.turnOnLock(new Pose2d());}));
         xboxController.x().onTrue(new InstantCommand(() -> {swerve.turnOffLock();}));
+        xboxController.b().onTrue(new InstantCommand(() -> {detections.objectDetectionToggle();}));
         Trigger inRegion1 = new Trigger(() -> {
             boolean isInRegion = regionHandler.inRegion("region1", swerve.getPose());
             return isInRegion;
