@@ -47,7 +47,7 @@ public class RobotContainer {
 
     private void configureBindings(){
         // Bind aiming command to a button (e.g., A button)
-        xboxController.a().whileTrue(new TeleopAimDrive(swerve, controller, new Pose2d(5, 5, null))); // Pass appropriate target pose
+        xboxController.a().whileTrue(new TeleopAimDrive(swerve, controller, new Pose2d(0, 0, null))); // Pass appropriate target pose
 
         // Bind aligning command to another button (e.g., B button)
         xboxController.b().whileTrue(new TeleopDriveToObject(swerve, controller));

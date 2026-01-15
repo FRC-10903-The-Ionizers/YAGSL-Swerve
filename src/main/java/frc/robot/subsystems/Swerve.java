@@ -35,10 +35,7 @@ public class Swerve extends SubsystemBase {
 
     private final PIDController xController = new PIDController(1, 0.0, 0.1);
     private final PIDController yController = new PIDController(1, 0.0, 0.1);
-    private final PIDController headingController = new PIDController(10, 0, 0);
-
-    private boolean isLockToPoint = false;
-    private Pose2d targetPose;
+    private final PIDController headingController = new PIDController(5, 0, 0.1);
 
     public Swerve() {
         try {
@@ -107,28 +104,8 @@ public class Swerve extends SubsystemBase {
         swerveDrive.drive(new Translation2d(xSpeed, ySpeed), rotation, true, false);  
     }
 
-    public void setTargetAngle(double targetAngle) {
-        //Makes robot stationary
-        headingController.setSetpoint(Math.toRadians(targetAngle));
-        //calculate the output
-        double output = headingController.calculate(swerveDrive.getPose().getRotation().getRadians());
-        swerveDrive.drive(new Translation2d(0, 0), output, true, false);
-    }
-
     public SwerveDrive getSwerveDrive() {
         return swerveDrive;
-    }
-
-    public void setRelativeTargetAngle(double targetAngle) {
-        headingController.setSetpoint(0);
-        //calculate the output
-        double output = headingController.calculate(targetAngle);
-        //System.out.println("heading calculated diff" + output );
-        //double output = targetAngle-swerveDrive.getPose().getRotation().getDegrees();
-        System.out.println("Target Angle " + targetAngle);
-        System.out.println("Actual Angle " + swerveDrive.getPose().getRotation().getDegrees());
-        System.out.println("Change in Angle " + output);
-        swerveDrive.drive(new Translation2d(0, 0), Math.toRadians(output), true, false);
     }
 
     public void addVisionMeasurement(Pose2d visionPose, double timestamp, Matrix<N3, N1> estimationStdDevs) {
@@ -139,34 +116,22 @@ public class Swerve extends SubsystemBase {
         swerveDrive.addVisionMeasurement(visionPose, timestamp, estimationStdDevs);
     }
 
-    public void turnOnLock(Pose2d targetPose) {
-        System.out.println("a pressed");
-        isLockToPoint = true;
-        this.targetPose = targetPose;
-    }
-
-    public void turnOffLock(){
-        isLockToPoint = false;
-    }
-
     public double lockToPoint(double targetPointX, double targetPointY) {
         //get position
         Pose2d currentPosition = swerveDrive.getPose();
         double currentX = currentPosition.getX();
         double currentY = currentPosition.getY();
-        // log current position
-        System.out.println("Current X: " + currentX);
-        System.out.println("Current Y: " + currentY);
-        
+
+        System.out.println("Current Position: " + currentX + " " + currentY);
+        System.out.println("Target Position: " + targetPointX + " " + targetPointY);
+
         double target_angle = Math.atan2(targetPointY - currentY, targetPointX - currentX);
-        System.out.println(target_angle);
 
         // set the robot's target angle  - rad to deg
         return target_angle;
     }
 
     public void driveWhileLocked(Translation2d translation, boolean isFieldRelative, Pose2d targetPose){
-        System.out.println("Driving while locked");
         double targetAngle = lockToPoint(targetPose.getX(), targetPose.getY());
         headingController.setSetpoint(targetAngle);
         double rotation = headingController.calculate(swerveDrive.getPose().getRotation().getRadians());
