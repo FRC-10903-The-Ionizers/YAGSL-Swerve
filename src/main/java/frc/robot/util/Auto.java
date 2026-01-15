@@ -32,7 +32,7 @@ public class Auto {
         AutoRoutine routine = autoFactory.newRoutine("Auto");
 
         // Load the routine's trajectories
-        AutoTrajectory trajectory = routine.trajectory("Test.traj");
+        AutoTrajectory trajectory = routine.trajectory("TestChoreoPath.traj");
 
         // When the routine begins, reset odometry and start the first trajectory (1)
         routine.active().onTrue(
@@ -45,7 +45,11 @@ public class Auto {
     }
 
     public Command getAutoCommand(){
-        return Commands.runOnce(() -> chooser.getSelected().schedule());
-        // return chooser.getSelected();
+        //return Commands.runOnce(() -> chooser.getSelected().schedule());
+        return chooser.getSelected();
+    }
+
+    public AutoFactory getAutoFactory(){
+        return autoFactory;
     }
 }
