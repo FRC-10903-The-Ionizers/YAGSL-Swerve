@@ -16,8 +16,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.Commands;
 import java.io.File;
+import java.util.Queue;
 
 public class RobotContainer {
+    
     private final Swerve swerve = new Swerve();
     private final Controller controller = new Controller(0);
     private final RegionHandler regionHandler = new RegionHandler(new File(Filesystem.getDeployDirectory(), "misc/regions.json"));
@@ -26,14 +28,26 @@ public class RobotContainer {
     private final ObjectDetection detections = new ObjectDetection();
 
     public RobotContainer() {
+
+        configureBindings();
         SmartDashboard.putData("SwerveField", swerve.getField());
         System.out.println(regionHandler.getAllRegionNames());
 
-        // Set default command for swerve subsystem (handles normal driving)
-        swerve.setDefaultCommand(new TeleopDriveCommand(swerve, controller));
+    }
 
+    // Remove controllerDrive() as it's replaced by commands
+
+    public Swerve getSwerve(){
+        return swerve;
+    }
+    
+    public Controller getController(){
+        return controller;
+    }
+
+    private void configureBindings(){
         // Bind aiming command to a button (e.g., A button)
-        xboxController.a().whileTrue(new TeleopAimDrive(swerve, controller, new Pose2d())); // Pass appropriate target pose
+        xboxController.a().whileTrue(new TeleopAimDrive(swerve, controller, new Pose2d(5, 5, null))); // Pass appropriate target pose
 
         // Bind aligning command to another button (e.g., B button)
         xboxController.b().whileTrue(new TeleopDriveToObject(swerve, controller));
@@ -51,11 +65,5 @@ public class RobotContainer {
 
         // // Combined trigger example
         // inRegion1.and(inRegion2).onTrue(Commands.runOnce(() -> System.out.println("Robot is in both region1 and region2")));
-    }
-
-    // Remove controllerDrive() as it's replaced by commands
-
-    public Swerve getSwerve(){
-        return swerve;
     }
 }

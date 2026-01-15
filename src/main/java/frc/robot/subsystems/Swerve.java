@@ -35,7 +35,7 @@ public class Swerve extends SubsystemBase {
 
     private final PIDController xController = new PIDController(1, 0.0, 0.1);
     private final PIDController yController = new PIDController(1, 0.0, 0.1);
-    private final PIDController headingController = new PIDController(50, 0, 3);
+    private final PIDController headingController = new PIDController(10, 0, 0);
 
     private boolean isLockToPoint = false;
     private Pose2d targetPose;
@@ -137,7 +137,6 @@ public class Swerve extends SubsystemBase {
         }
         
         swerveDrive.addVisionMeasurement(visionPose, timestamp, estimationStdDevs);
-        swerveDrive.resetOdometry(visionPose);
     }
 
     public void turnOnLock(Pose2d targetPose) {

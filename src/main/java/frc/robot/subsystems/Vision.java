@@ -62,7 +62,6 @@ import frc.robot.Constants;
 
  
      public void periodic() {
-
          Optional<EstimatedRobotPose> visionEst = Optional.empty();
          for (var change : camera.getAllUnreadResults()) {
              visionEst = photonEstimator.update(change);
