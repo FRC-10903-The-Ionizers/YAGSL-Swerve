@@ -7,21 +7,22 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.DrivingCommands.TeleopDriveCommand;
 import frc.robot.subsystems.Swerve;
 import frc.robot.util.Auto;
+import frc.robot.util.Controller;
 
 public class Robot extends TimedRobot {
+
     private RobotContainer robotContainer;
     private final Timer timer = new Timer();
     private AutoFactory autoFactory;
     private Auto auto;
 
-    private Swerve swerve;
-    
     @Override
     public void robotInit() {
         robotContainer = new RobotContainer();
-        swerve = robotContainer.getSwerve();
+        Swerve swerve = robotContainer.getSwerve();
 
         autoFactory = new AutoFactory(
             swerve::getPose, // A function that returns the current robot pose
@@ -58,8 +59,24 @@ public class Robot extends TimedRobot {
     }
 
     @Override
+    public void teleopInit() {
+
+        Swerve swerve = robotContainer.getSwerve();
+        Controller controller = robotContainer.getController();
+        TeleopDriveCommand teleopDriveCommand = new TeleopDriveCommand(swerve, controller);
+
+        swerve.setDefaultCommand(teleopDriveCommand);
+    }
+
+    @Override
     public void teleopPeriodic() {
-        // robotContainer.controllerDrive();
+        
+    }
+
+    @Override
+    public void teleopExit() {
+        Swerve swerve = robotContainer.getSwerve();
+        swerve.removeDefaultCommand();
     }
 
     private boolean isRedAlliance() {
