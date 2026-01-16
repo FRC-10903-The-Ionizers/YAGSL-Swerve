@@ -2,8 +2,10 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import choreo.auto.AutoFactory;
+import edu.wpi.first.net.WebServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -37,6 +39,8 @@ public class Robot extends TimedRobot {
         // Optionally disable the joystick connection warning
         DriverStation.silenceJoystickConnectionWarning(true);
 
+        // Starts file server to host the Elastic layout to be fetched by client from robot
+        WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
     }
 
     @Override
