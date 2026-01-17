@@ -30,10 +30,12 @@ public class RobotContainer {
     private final ObjectDetection detections = new ObjectDetection();
     
     public RobotContainer() {
-
+        // configure all triggers
         configureBindings();
+
+        // send data to Elastic
         SmartDashboard.putData("SwerveField", swerve.getField());
-        System.out.println(regionHandler.getAllRegionNames());
+        SmartDashboard.putData(swerve);
 
     }
 

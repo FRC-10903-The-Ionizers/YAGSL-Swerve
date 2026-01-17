@@ -40,7 +40,7 @@ public class Robot extends TimedRobot {
 
         Constants.AutoConstants.autoFactory = autoFactory;
 
-        auto = new Auto(autoFactory);
+        auto = new Auto(autoFactory, swerve);
         System.out.println("Auto initialized.");
         RobotModeTriggers.autonomous().onTrue(auto.getAutoCommand());
         // Optionally disable the joystick connection warning

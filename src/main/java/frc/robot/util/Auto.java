@@ -2,23 +2,40 @@ package frc.robot.util;
 
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
+
+import java.util.Set;
+
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.Constants.AutoConstants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.units.Units;
+import frc.robot.subsystems.Swerve;
 
 public class Auto {
+
     private final AutoChooser autoChooser;
+    private static Swerve swerve;
 
-    public Auto(AutoFactory factory) {
-        // Make something to display on the GUI that allows the user to select the autonomous they want to run
+    public Auto(AutoFactory factory, Swerve swerve) {
+        // Make something to display on the GUI that allows the user to select the
+        // autonomous they want to run
         autoChooser = new AutoChooser();
-
-        // I added the dummy command just to test things. For real autos, please make routines and use their commands.
+        Auto.swerve = swerve;
+        // I added the dummy command just to test things. For real autos, please make
+        // routines and use their commands.
         // NEVER SET "getAutoCommand()" AS AN OPTION FOR AN AUTONOMOUS
 
         autoChooser.addRoutine("T", this::tRoutine);
@@ -26,9 +43,6 @@ public class Auto {
         autoChooser.addRoutine("Loop", this::loopRoutine);
         // Put the auto chooser on the dashboard
         SmartDashboard.putData("Choreo Chooser", autoChooser);
-
-        // Schedule the selected auto during the autonomous period
-        RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
     }
 
     public AutoRoutine tRoutine() {
@@ -37,56 +51,102 @@ public class Auto {
         // Load the routine's trajectories
         AutoTrajectory trajectory = routine.trajectory("T.traj");
 
-        double totalTime = trajectory.getRawTrajectory().getTotalTime();
-        
-        trajectory.atTime(totalTime*0.5).onTrue(Commands.print("Halftime!"));
-
-        // When the routine begins, reset odometry and start the first trajectory (1)
         routine.active().onTrue(
-            Commands.sequence(
-                trajectory.resetOdometry(),
-                trajectory.cmd()
-            )
-        );
-
+                Commands.sequence(
+                        trajectory.resetOdometry(),
+                        cmdWithAccuracy(
+                                trajectory,
+                                Units.Seconds.of(5),
+                                Units.Inches.of(4.0))));
 
         return routine;
     }
 
-    public AutoRoutine loopRoutine(){
+    public AutoRoutine loopRoutine() {
+
         AutoRoutine routine = AutoConstants.autoFactory.newRoutine("Loop");
 
         AutoTrajectory loopTrajectory = routine.trajectory("Loop.traj");
 
         routine.active().onTrue(
-            Commands.sequence(
-                loopTrajectory.resetOdometry(),
-                loopTrajectory.cmd()
-            )
-        );
+                Commands.sequence(
+                        loopTrajectory.resetOdometry(),
+                        cmdWithAccuracy(
+                                loopTrajectory,
+                                Units.Seconds.of(5),
+                                Units.Inches.of(4.0))));
 
         return routine;
     }
 
-    public AutoRoutine forwardThenLoopRoutine(){
+    public AutoRoutine forwardThenLoopRoutine() {
         AutoRoutine routine = AutoConstants.autoFactory.newRoutine("ForwardThenLoop");
 
         AutoTrajectory forwardTrajectory = routine.trajectory("Forward.traj");
         AutoTrajectory loopTrajectory = routine.trajectory("Loop.traj");
 
         routine.active().onTrue(
-            Commands.sequence(
-                forwardTrajectory.resetOdometry(),
-                forwardTrajectory.cmd(),
-                loopTrajectory.cmd()
-            )
-        );
+                Commands.sequence(
+                        forwardTrajectory.resetOdometry(),
+                        cmdWithAccuracy(
+                                forwardTrajectory,
+                                Units.Seconds.of(5),
+                                Units.Inches.of(4.0)),
+                        cmdWithAccuracy(
+                                loopTrajectory,
+                                Units.Seconds.of(5),
+                                Units.Inches.of(4.0))));
 
         return routine;
     }
 
-    public Command getAutoCommand(){
-        //return Commands.runOnce(() -> chooser.getSelected().schedule());
+    public Command getAutoCommand() {
         return autoChooser.selectedCommand();
+    }
+
+    private static boolean isFinished(AutoTrajectory trajectory, Distance epsilonDist) {
+
+        boolean translationCompleted = translationIsFinished(trajectory, epsilonDist);
+        boolean rotationCompleted = rotationIsFinished(trajectory);
+
+        SmartDashboard.putBoolean("Choreo/Translation Completed", translationCompleted);
+        SmartDashboard.putBoolean("Choreo/Rotation Completed", rotationCompleted);
+
+        return translationCompleted && rotationCompleted;
+    }
+
+    private static boolean translationIsFinished(AutoTrajectory trajectory, Distance epsilonDist) {
+
+        Pose2d currentPose = swerve.getPose();
+        Pose2d finalPose = trajectory.getFinalPose().get();
+
+        SmartDashboard.putNumber(
+                "Choreo/Distance Away Inches",
+                currentPose.getTranslation().getDistance(finalPose.getTranslation()) * 39.37);
+
+        return currentPose.getTranslation().getDistance(finalPose.getTranslation()) < epsilonDist.in(Units.Meters);
+    }
+
+    private static boolean rotationIsFinished(AutoTrajectory trajectory) {
+        Pose2d currentPose = swerve.getPose();
+        Pose2d finalPose = trajectory.getFinalPose().get();
+        Angle epsilonAngle = AutoConstants.kAutoAngleEpsilon;
+
+        return MathUtil.angleModulus(
+                Math.abs(currentPose.getRotation().minus(finalPose.getRotation()).getRadians())) < epsilonAngle
+                        .in(Units.Radians);
+    }
+
+    public static Command cmdWithAccuracy(AutoTrajectory trajectory, Time timeout, Distance epsilonDist) {
+
+        return Commands.defer(
+                () -> new FunctionalCommand(
+                        trajectory.cmd()::initialize,
+                        trajectory.cmd()::execute,
+                        trajectory.cmd()::end,
+                        () -> isFinished(trajectory, epsilonDist)),
+                Set.of(swerve))
+                .withTimeout(trajectory.getRawTrajectory().getTotalTime() + timeout.in(Units.Seconds))
+                .finallyDo(() -> swerve.drive(new Translation2d(), 0, false));
     }
 }
