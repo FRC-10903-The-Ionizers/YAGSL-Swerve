@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.DrivingCommands.TeleopDriveCommand;
 import frc.robot.subsystems.Swerve;
 import frc.robot.util.Auto;
@@ -34,6 +35,8 @@ public class Robot extends TimedRobot {
             true, // If alliance flipping should be enabled 
             swerve // The drive subsystem
         );
+
+        autoFactory.bind("Yo", Commands.print("At Yo"));
 
         Constants.AutoConstants.autoFactory = autoFactory;
 

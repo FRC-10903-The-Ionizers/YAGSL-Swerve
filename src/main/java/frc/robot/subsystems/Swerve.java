@@ -93,9 +93,10 @@ public class Swerve extends SubsystemBase {
 
         // Generate the next speeds for the robot
         ChassisSpeeds speeds = new ChassisSpeeds(
-                sample.vx /*+ xController.calculate(pose.getX(), sample.x)*/,
-                sample.vy /*+ yController.calculate(pose.getY(), sample.y)*/,
-                sample.omega /*+ headingController.calculate(pose.getRotation().getRadians(), sample.heading)*/);
+                sample.vx + xController.calculate(pose.getX(), sample.x),
+                sample.vy + yController.calculate(pose.getY(), sample.y),
+                sample.omega + headingController.calculate(pose.getRotation().getRadians(), sample.heading)
+            );
 
         double xSpeed = speeds.vxMetersPerSecond;
         double ySpeed = speeds.vyMetersPerSecond;
