@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.DrivingCommands.AutoDrive;
 import frc.robot.commands.DrivingCommands.TeleopDriveCommand;
 import frc.robot.subsystems.Swerve;
 import frc.robot.util.Auto;
@@ -21,7 +20,6 @@ public class Robot extends TimedRobot {
 
     private RobotContainer robotContainer;
     private final Timer timer = new Timer();
-    private AutoFactory autoFactory;
     private Auto auto;
 
     public Robot(){
@@ -29,7 +27,7 @@ public class Robot extends TimedRobot {
         robotContainer = new RobotContainer();
         Swerve swerve = robotContainer.getSwerve();
 
-        autoFactory = new AutoFactory(
+        AutoFactory autoFactory = new AutoFactory(
             swerve::getPose, // A function that returns the current robot pose
             swerve::resetOdometry, // A function that resets the current robot pose to the provided Pose2d
             swerve::followTrajectory, // The drive subsystem trajectory follower 
@@ -37,14 +35,13 @@ public class Robot extends TimedRobot {
             swerve // The drive subsystem
         );
 
+        Constants.AutoConstants.autoFactory = autoFactory;
+
         auto = new Auto(autoFactory);
         System.out.println("Auto initialized.");
         RobotModeTriggers.autonomous().onTrue(auto.getAutoCommand());
         // Optionally disable the joystick connection warning
         DriverStation.silenceJoystickConnectionWarning(true);
-
-        // Starts file server to host the Elastic layout to be fetched by client from robot
-        WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
     }
 
     @Override
@@ -55,11 +52,12 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         timer.restart();
-        
-        Swerve swerve = robotContainer.getSwerve();
-        AutoDrive autodrive = new AutoDrive(swerve);
+        Command autoCommand = auto.getAutoCommand();
 
-        swerve.setDefaultCommand(autodrive);
+        if (autoCommand != null) {
+            autoCommand.schedule();
+        }
+
     }
     
 

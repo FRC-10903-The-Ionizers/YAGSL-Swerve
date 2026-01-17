@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import java.io.File;
 import java.util.Queue;
 import java.util.function.Supplier;
-import frc.robot.commands.DrivingCommands.AutoDrive;
 
 public class RobotContainer {
     
@@ -55,7 +54,6 @@ public class RobotContainer {
         // Bind aligning command to another button (e.g., B button)
         xboxController.b().whileTrue(new TeleopDriveToObject(swerve, controller));
 
-        xboxController.y().onTrue(new AutoDrive(swerve));
         // // Region triggers for scheduling commands
         // Trigger inRegion1 = new Trigger(() -> regionHandler.inRegion("region1", swerve.getPose()));
         // Trigger inRegion2 = new Trigger(() -> regionHandler.inRegion("region2", swerve.getPose()));
