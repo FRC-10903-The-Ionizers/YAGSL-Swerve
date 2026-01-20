@@ -140,6 +140,14 @@ public class Swerve extends SubsystemBase {
         swerveDrive.drive(translation, rotation, isFieldRelative, false);
     }
 
+    public void driveToPose(Pose2d targetPose) {
+        Pose2d currentPose = swerveDrive.getPose();
+        double xCalculated = xController.calculate(currentPose.getX(), targetPose.getX());
+        double yCalculated = xController.calculate(currentPose.getY(), targetPose.getY());
+        double omegaCalculated = xController.calculate(currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians());
+        drive(new Translation2d(xCalculated, yCalculated), omegaCalculated, false);
+    }
+
     public void drive(Translation2d translation, double rotation, boolean isFieldRelative){
         swerveDrive.drive(translation, rotation, isFieldRelative, false);
     }
