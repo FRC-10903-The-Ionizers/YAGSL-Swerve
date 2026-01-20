@@ -1,41 +1,34 @@
 package frc.robot.subsystems;
 
+import java.io.File;
+
+import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import swervelib.SwerveDrive;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
-
-import java.io.Console;
-import java.io.File;
-
-import choreo.trajectory.SwerveSample;
 
 public class Swerve extends SubsystemBase {
     private SwerveDrive swerveDrive;
     private boolean initialized = false;
     private Field2d field = new Field2d();
 
-    private final PIDController xController = new PIDController(1, 0.0, 0.1);
-    private final PIDController yController = new PIDController(1, 0.0, 0.1);
-    private final PIDController headingController = new PIDController(5, 0, 0.1);
+    private final PIDController xController = new PIDController(4, 0, 0);
+    private final PIDController yController = new PIDController(4, 0, 0);
+    private final PIDController headingController = new PIDController(4, 0, 0);
 
     public Swerve() {
         try {
@@ -50,6 +43,8 @@ public class Swerve extends SubsystemBase {
 
             swerveDrive.setCosineCompensator(true);
             swerveDrive.setHeadingCorrection(true);
+
+            swerveDrive.resetOdometry(new Pose2d(0, 0, Rotation2d.kZero));
 
             System.out.println("Swerve is initialized!");
             initialized = true;
@@ -143,9 +138,14 @@ public class Swerve extends SubsystemBase {
     public void driveToPose(Pose2d targetPose) {
         Pose2d currentPose = swerveDrive.getPose();
         double xCalculated = xController.calculate(currentPose.getX(), targetPose.getX());
-        double yCalculated = xController.calculate(currentPose.getY(), targetPose.getY());
-        double omegaCalculated = xController.calculate(currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians());
-        drive(new Translation2d(xCalculated, yCalculated), omegaCalculated, false);
+        double yCalculated = yController.calculate(currentPose.getY(), targetPose.getY());
+        double omegaCalculated = headingController.calculate(currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians());
+        
+        System.out.printf("Current X: %.2f | Target X: %.2f | X Output: %.2f\n", currentPose.getX(), targetPose.getX(), xCalculated);
+        System.out.printf("Current Y: %.2f | Target Y: %.2f | Y Output: %.2f\n", currentPose.getY(), targetPose.getY(), yCalculated);
+        System.out.printf("Current Heading: %.2f | Target Heading: %.2f | Heading Output: %.2f\n\n", currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians(), omegaCalculated);
+        
+        drive(new Translation2d(xCalculated, yCalculated), omegaCalculated, true);
     }
 
     public void drive(Translation2d translation, double rotation, boolean isFieldRelative){
