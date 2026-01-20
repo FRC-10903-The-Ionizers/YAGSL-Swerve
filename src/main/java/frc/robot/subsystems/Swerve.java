@@ -49,6 +49,7 @@ public class Swerve extends SubsystemBase {
             swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(maximumSpeed);
 
             swerveDrive.setCosineCompensator(true);
+            swerveDrive.setHeadingCorrection(true);
 
             System.out.println("Swerve is initialized!");
             initialized = true;
