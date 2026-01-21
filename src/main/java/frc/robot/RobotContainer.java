@@ -10,6 +10,7 @@ import frc.robot.commands.DrivingCommands.TeleopDriveCommand; // Assuming this c
 import frc.robot.commands.DrivingCommands.TeleopAimDrive; // Assuming this command exists for aiming
 import frc.robot.commands.DrivingCommands.TeleopDriveToObject; // Assuming this command exists for aligning
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -55,6 +56,12 @@ public class RobotContainer {
 
         // Bind aligning command to another button (e.g., B button)
         xboxController.b().whileTrue(new TeleopDriveToObject(swerve, controller));
+
+        // Bind go to point test command to the D pad
+        xboxController.povUp().whileTrue(Commands.run(() -> swerve.driveToPose(new Pose2d(0, 2, Rotation2d.kZero)), swerve));
+        xboxController.povLeft().whileTrue(Commands.run(() -> swerve.driveToPose(new Pose2d(-2, 0, Rotation2d.kZero)), swerve));
+        xboxController.povRight().whileTrue(Commands.run(() -> swerve.driveToPose(new Pose2d(2, 0, Rotation2d.kZero)), swerve));
+        xboxController.povDown().whileTrue(Commands.run(() -> swerve.driveToPose(new Pose2d(0, -2, Rotation2d.kZero)), swerve));
 
         // // Region triggers for scheduling commands
         // Trigger inRegion1 = new Trigger(() -> regionHandler.inRegion("region1", swerve.getPose()));

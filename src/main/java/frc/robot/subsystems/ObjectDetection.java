@@ -24,7 +24,7 @@ public class ObjectDetection extends SubsystemBase {
       photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
    }
    public void periodic() {
-      var result = camera.getLatestResult();
+      var result = camera.getAllUnreadResults().get(0);
       boolean hasTargets = result.hasTargets();
       //System.out.print(result);
       //System.out.println("object detection activated");
