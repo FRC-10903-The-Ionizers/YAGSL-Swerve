@@ -38,7 +38,7 @@ public class Robot extends TimedRobot {
 
         autoFactory.bind("Yo", Commands.print("At Yo"));
 
-        Constants.AutoConstants.autoFactory = autoFactory;
+        Constants.AutoConstants.kAutoFactory = autoFactory;
 
         auto = new Auto(autoFactory, swerve);
         System.out.println("Auto initialized.");

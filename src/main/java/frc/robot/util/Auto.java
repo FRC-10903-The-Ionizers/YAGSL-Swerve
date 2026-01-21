@@ -46,7 +46,7 @@ public class Auto {
     }
 
     public AutoRoutine tRoutine() {
-        AutoRoutine routine = AutoConstants.autoFactory.newRoutine("Auto");
+        AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
 
         // Load the routine's trajectories
         AutoTrajectory trajectory = routine.trajectory("T.traj");
@@ -64,7 +64,7 @@ public class Auto {
 
     public AutoRoutine loopRoutine() {
 
-        AutoRoutine routine = AutoConstants.autoFactory.newRoutine("Loop");
+        AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Loop");
 
         AutoTrajectory loopTrajectory = routine.trajectory("Loop.traj");
 
@@ -80,7 +80,7 @@ public class Auto {
     }
 
     public AutoRoutine forwardThenLoopRoutine() {
-        AutoRoutine routine = AutoConstants.autoFactory.newRoutine("ForwardThenLoop");
+        AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("ForwardThenLoop");
 
         AutoTrajectory forwardTrajectory = routine.trajectory("Forward.traj");
         AutoTrajectory loopTrajectory = routine.trajectory("Loop.traj");

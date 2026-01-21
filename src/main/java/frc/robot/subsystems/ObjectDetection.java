@@ -17,14 +17,14 @@ public class ObjectDetection extends SubsystemBase {
    private boolean currentlyTracking = false;
    private boolean objectDetectionOn = false;
    public ObjectDetection() {
-      camera = new PhotonCamera(Constants.Vision.objectCameraName);
+      camera = new PhotonCamera(Constants.Vision.kObjectCameraName);
 
       photonEstimator =
                new PhotonPoseEstimator(Constants.Vision.kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCam);
       photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
    }
    public void periodic() {
-      var result = camera.getAllUnreadResults().get(0);
+      var result = camera.getLatestResult();
       boolean hasTargets = result.hasTargets();
       //System.out.print(result);
       //System.out.println("object detection activated");

@@ -7,6 +7,7 @@ import frc.robot.util.Auto;
 import frc.robot.util.Controller;
 import frc.robot.subsystems.Vision;
 import frc.robot.commands.DrivingCommands.TeleopDriveCommand; // Assuming this command exists for default driving
+import frc.robot.commands.DrivingCommands.GoToPoint;
 import frc.robot.commands.DrivingCommands.TeleopAimDrive; // Assuming this command exists for aiming
 import frc.robot.commands.DrivingCommands.TeleopDriveToObject; // Assuming this command exists for aligning
 import edu.wpi.first.math.geometry.Pose2d;
@@ -58,10 +59,10 @@ public class RobotContainer {
         xboxController.b().whileTrue(new TeleopDriveToObject(swerve, controller));
 
         // Bind go to point test command to the D pad
-        xboxController.povUp().whileTrue(Commands.run(() -> swerve.driveToPose(new Pose2d(0, 2, Rotation2d.kZero)), swerve));
-        xboxController.povLeft().whileTrue(Commands.run(() -> swerve.driveToPose(new Pose2d(-2, 0, Rotation2d.kZero)), swerve));
-        xboxController.povRight().whileTrue(Commands.run(() -> swerve.driveToPose(new Pose2d(2, 0, Rotation2d.kZero)), swerve));
-        xboxController.povDown().whileTrue(Commands.run(() -> swerve.driveToPose(new Pose2d(0, -2, Rotation2d.kZero)), swerve));
+        xboxController.povUp().onTrue(new GoToPoint(swerve, new Pose2d(0, 2, Rotation2d.kZero)));
+        xboxController.povLeft().onTrue(new GoToPoint(swerve, new Pose2d(-2, 0, Rotation2d.kZero)));
+        xboxController.povRight().onTrue(new GoToPoint(swerve, new Pose2d(-2, 0, Rotation2d.kZero)));
+        xboxController.povDown().onTrue(new GoToPoint(swerve, new Pose2d(0, -2, Rotation2d.kZero)));
 
         // // Region triggers for scheduling commands
         // Trigger inRegion1 = new Trigger(() -> regionHandler.inRegion("region1", swerve.getPose()));

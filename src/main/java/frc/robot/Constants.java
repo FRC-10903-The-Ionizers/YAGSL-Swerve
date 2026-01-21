@@ -18,11 +18,12 @@ public class Constants {
     public static class DriveConstants {
         public static final double kControllerDriveMultiplier = 1.0;
         public static final double kControllerRotationMultiplier = 2.0;
-        public static final double autoDriveMultiplier = 4.5;
+        public static final double kAutoDriveMultiplier = 4.5;
+        public static final double kMinimumDistanceToStop = 0.1;
     }
     public static class Vision {
-        public static String aprilCameraName = "Arducam_OV9281_USB_Camera";
-        public static String objectCameraName = "Arducam_OV9782_USB_Camera";
+        public static String kAprilCameraName = "Arducam_OV9281_USB_Camera";
+        public static String kObjectCameraName = "Arducam_OV9782_USB_Camera";
         public static Transform3d kRobotToCam = new Transform3d();
         public static AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);;
 
@@ -31,7 +32,7 @@ public class Constants {
     }
 
     public static class AutoConstants {
-        public static AutoFactory autoFactory;
+        public static AutoFactory kAutoFactory;
         public static final double kDelayTime = 0.08;
         public static final Angle kAutoAngleEpsilon = Units.Degrees.of(1.0);
     }
