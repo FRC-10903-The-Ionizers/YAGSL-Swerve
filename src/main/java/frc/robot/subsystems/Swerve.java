@@ -22,6 +22,12 @@ import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
 public class Swerve extends SubsystemBase {
+    /**
+     * Swerve subsystem for the robot.
+     * 
+     * @author Max Clementson & Jake Xie
+     * @since 2025-10-smth
+     */
     private SwerveDrive swerveDrive;
     private boolean initialized = false;
     private Field2d field = new Field2d();
@@ -31,6 +37,14 @@ public class Swerve extends SubsystemBase {
     private final PIDController headingController = new PIDController(1, 0, 0);
 
     public Swerve() {
+        /**
+         * Swerve constructor for the robot.
+         * 
+         * @args None
+         * @author Max Clementson & Jake Xie
+         * @since 2025-10-smth
+         * @return void
+         */
         try {
             headingController.enableContinuousInput(-Math.PI, Math.PI);
             double maximumSpeed = Units.feetToMeters(4.5);
@@ -57,6 +71,15 @@ public class Swerve extends SubsystemBase {
     }
 
     public void periodic() {
+        /**
+         * Periodic method for the swerve subsystem.
+         * 
+         * Updates the field position of the robot.
+         * @args None
+         * @author Max Clementson & Jake Xie
+         * @since 2025-10-smth
+         * @return void
+         */
         if (!initialized)
             return;
 
@@ -64,6 +87,14 @@ public class Swerve extends SubsystemBase {
     }
 
     public Pose2d resetOdometry(Pose2d pose) {
+        /**
+         * Resets the odometry of the robot.
+         * 
+         * @args Pose2d pose
+         * @author Max Clementson & Jake Xie
+         * @since 2025-10-smth
+         * @return Pose2d
+         */
         if (!initialized)
             return new Pose2d();
         swerveDrive.resetOdometry(pose);
@@ -73,10 +104,26 @@ public class Swerve extends SubsystemBase {
     // Elastic Stuff
 
     public Field2d getField() {
+        /**
+         * Gets the field position of the robot.
+         * 
+         * @args None
+         * @author Max Clementson & Jake Xie
+         * @since 2025-10-smth
+         * @return Field2d
+         */
         return field;
     }
 
     public Pose2d getPose() {
+        /**
+         * Gets the pose of the robot.
+         * 
+         * @args None
+         * @author Max Clementson & Jake Xie
+         * @since 2025-10-smth
+         * @return Pose2d
+         */
         if (!initialized)
             return new Pose2d();
             
@@ -84,6 +131,15 @@ public class Swerve extends SubsystemBase {
     }
 
     public void followTrajectory(SwerveSample sample) {
+        /**
+         * Follows a trajectory for the robot using elastic.
+         * 
+         * @args SwerveSample sample
+         * @author Max Clementson & Jake Xie
+         * @since 2025-10-smth
+         * @return void
+         */
+
         // Get the current pose of the robot
         Pose2d pose = swerveDrive.getPose();
 
@@ -102,10 +158,26 @@ public class Swerve extends SubsystemBase {
     }
 
     public SwerveDrive getSwerveDrive() {
+        /**
+         * Gets the swerve drive object.
+         * 
+         * @args None
+         * @author Max Clementson & Jake Xie
+         * @since 2025-10-smth
+         * @return SwerveDrive
+         */
         return swerveDrive;
     }
 
     public void addVisionMeasurement(Pose2d visionPose, double timestamp, Matrix<N3, N1> estimationStdDevs) {
+        /**
+         * Adds a vision measurement to the swerve drive, uses standard deviations to weight the measurement along with swerve drive's odometry.
+         * 
+         * @args Pose2d visionPose, double timestamp, Matrix<N3, N1> estimationStdDevs
+         * @author Max Clementson & Jake Xie
+         * @since 2025-10-smth
+         * @return void
+         */
         if (!initialized){
             return;
         }
@@ -114,6 +186,14 @@ public class Swerve extends SubsystemBase {
     }
 
     public double lockToPoint(double targetPointX, double targetPointY) {
+        /**
+         * Locks the robot's orientation to a point on the field.
+         * 
+         * @args double targetPointX, double targetPointY
+         * @author Siddhartha Hiremath, Justin Barratta - refactored from original code
+         * @since 2025-10-smth
+         * @return double target_angle
+         */
         //get position
         Pose2d currentPosition = swerveDrive.getPose();
         double currentX = currentPosition.getX();
@@ -129,6 +209,14 @@ public class Swerve extends SubsystemBase {
     }
 
     public void driveWhileLocked(Translation2d translation, boolean isFieldRelative, Pose2d targetPose){
+        /**
+         * Drives the robot while locked to a point on the field.
+         * 
+         * @args Translation2d translation, boolean isFieldRelative, Pose2d targetPose
+         * @author Siddhartha Hiremath, Justin Barratta - refactored from original code
+         * @since 2025-10-smth
+         * @return void
+         */
         double targetAngle = lockToPoint(targetPose.getX(), targetPose.getY());
         headingController.setSetpoint(targetAngle);
         double rotation = headingController.calculate(swerveDrive.getPose().getRotation().getRadians());
@@ -136,6 +224,14 @@ public class Swerve extends SubsystemBase {
     }
 
     public void drive(Translation2d translation, double rotation, boolean isFieldRelative){
+        /**
+         * Drives the robot.
+         * 
+         * @args Translation2d translation, double rotation, boolean isFieldRelative
+         * @author Max Clementson & Jake Xie
+         * @since 2025-10-smth
+         * @return void
+         */
         swerveDrive.drive(translation, rotation, isFieldRelative, false);
     }
 }

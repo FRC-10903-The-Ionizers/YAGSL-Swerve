@@ -23,7 +23,13 @@ import java.util.Queue;
 import java.util.function.Supplier;
 
 public class RobotContainer {
-    
+
+    /**
+     * RobotContainer class for the robot.
+     * 
+     * @author Max Clementson & Jake Xie
+     * @since 2025-10-smth
+     */
     private final Swerve swerve = new Swerve();
     private final Controller controller = new Controller(0);
     private final RegionHandler regionHandler = new RegionHandler(new File(Filesystem.getDeployDirectory(), "misc/regions.json"));
@@ -32,6 +38,14 @@ public class RobotContainer {
     private final ObjectDetection detections = new ObjectDetection();
     
     public RobotContainer() {
+        /**
+         * RobotContainer constructor for the robot.
+         * 
+         * @args None
+         * @author Max Clementson & Jake Xie
+         * @since 2025-10-smth
+         * @return void
+         */
         // configure all triggers
         configureBindings();
 
@@ -44,14 +58,38 @@ public class RobotContainer {
     // Remove controllerDrive() as it's replaced by commands
 
     public Swerve getSwerve(){
+        /**
+         * Gets the swerve subsystem.
+         * 
+         * @args None
+         * @author Max Clementson & Jake Xie
+         * @since 2025-10-smth
+         * @return Swerve swerve
+         */
         return swerve;
     }
     
     public Controller getController(){
+        /**
+         * Gets the controller.
+         * 
+         * @args None
+         * @author Max Clementson & Jake Xie
+         * @since 2025-10-smth
+         * @return Controller controller
+         */
         return controller;
     }
 
     private void configureBindings(){
+        /**
+         * Configures the bindings for the robot, add to this when u have more buttons that do stuff.
+         * 
+         * @args None
+         * @author Max Clementson & Jake Xie
+         * @since 2025-10-smth
+         * @return void
+         */
         // Bind aiming command to a button (e.g., A button)
         xboxController.a().whileTrue(new TeleopAimDrive(swerve, controller, new Pose2d(0, 0, null))); // Pass appropriate target pose
 

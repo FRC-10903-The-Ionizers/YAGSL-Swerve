@@ -7,21 +7,45 @@ import frc.robot.subsystems.Swerve;
 import frc.robot.Constants;
 
 public class GoToPoint extends Command {
+  /**
+   * GoToPoint command for the robot.
+   * 
+   * @author Siddhartha Hiremath, Justin Barratta - refactored from original code
+   * @since 2025-10-smth
+   */
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Swerve swerve;
   private final Pose2d targetPose;
   private final double minDistance = Constants.DriveConstants.kMinimumDistanceToStop;
 
   public GoToPoint(Swerve subsystem, Pose2d targetPose) {
+    /**
+     * GoToPoint constructor for the robot.
+     * 
+     * @args Swerve subsystem, Pose2d targetPose
+     * @author Siddhartha Hiremath, Justin Barratta - refactored from original code
+     * @since 2026-01-21
+     * @return void
+     */
     swerve = subsystem;
     this.targetPose = targetPose;
   }
 
   public void initialize() {
-
+    /**
+     * @todo Remove this unless needed
+     */
   }
   
   public void execute() {
+    /**
+     * Executes the GoToPoint command.
+     * Periodically updates the translation and heading distance to the target pose by subtracting the current pose from the target pose.
+     * @args None
+     * @author Siddhartha Hiremath, Justin Barratta - refactored from original code
+     * @since 2026-01-21
+     * @return void
+     */
     Pose2d currentPose = swerve.getPose();
 
     double x_distance = targetPose.getX() - currentPose.getX();
@@ -36,7 +60,14 @@ public class GoToPoint extends Command {
 
   @Override
   public boolean isFinished(){
-
+    /**
+     * Checks if the GoToPoint command is finished based on the minimum distance to stop.
+     * 
+     * @args None
+     * @author Siddhartha Hiremath, Justin Barratta - refactored from original code
+     * @since 2026-01-21
+     * @return boolean
+     */
     Pose2d currentPose = swerve.getPose();
     double distance = currentPose.getTranslation().getDistance(targetPose.getTranslation());
     System.out.println(distance);

@@ -25,11 +25,26 @@ import edu.wpi.first.units.Units;
 import frc.robot.subsystems.Swerve;
 
 public class Auto {
+    /**
+     * Auto class for the robot.
+     * Uses choreo library to create autonomous routines.
+     * @author Max Clementson & Justin Barratta
+     * @since 2026-01-19
+     * @todo Auto branching needs to be implemented.
+     */
 
     private final AutoChooser autoChooser;
     private static Swerve swerve;
 
     public Auto(AutoFactory factory, Swerve swerve) {
+        /**
+         * Auto constructor for the robot.
+         * 
+         * @args AutoFactory factory, Swerve swerve
+         * @author Max Clementson & Justin Barratta
+         * @since 2025-10-smth
+         * @return void
+         */
         // Make something to display on the GUI that allows the user to select the
         // autonomous they want to run
         autoChooser = new AutoChooser();
@@ -46,6 +61,14 @@ public class Auto {
     }
 
     public AutoRoutine tRoutine() {
+        /**
+         * Example routine for the robot.
+         * 
+         * @args None
+         * @author Max Clementson & Justin Barratta
+         * @since 2026-01-19
+         * @return AutoRoutine
+         */
         AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
 
         // Load the routine's trajectories
@@ -63,7 +86,14 @@ public class Auto {
     }
 
     public AutoRoutine loopRoutine() {
-
+        /**
+         * Loop routine for the robot - probably goes in a loop around the field.
+         * 
+         * @args None
+         * @author Max Clementson & Justin Barratta
+         * @since 2026-01-19
+         * @return AutoRoutine
+         */
         AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Loop");
 
         AutoTrajectory loopTrajectory = routine.trajectory("Loop.traj");
@@ -80,6 +110,14 @@ public class Auto {
     }
 
     public AutoRoutine forwardThenLoopRoutine() {
+        /**
+         * Moves forward, then loops around the field.
+         * 
+         * @args None
+         * @author Max Clementson & Justin Barratta
+         * @since 2026-01-19
+         * @return AutoRoutine
+         */
         AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("ForwardThenLoop");
 
         AutoTrajectory forwardTrajectory = routine.trajectory("Forward.traj");
@@ -101,11 +139,26 @@ public class Auto {
     }
 
     public Command getAutoCommand() {
+        /**
+         * Gets the selected auto command from the auto chooser.
+         * 
+         * @args None
+         * @author Max Clementson & Justin Barratta
+         * @since 2026-01-19
+         * @return Command
+         */
         return autoChooser.selectedCommand();
     }
 
     private static boolean isFinished(AutoTrajectory trajectory, Distance epsilonDist) {
-
+        /**
+         * Checks if the trajectory is finished, based on whether translation and rotation are finished.
+         * 
+         * @args AutoTrajectory trajectory, Distance epsilonDist
+         * @author Max Clementson & Justin Barratta
+         * @since 2026-01-19
+         * @return boolean
+         */
         boolean translationCompleted = translationIsFinished(trajectory, epsilonDist);
         boolean rotationCompleted = rotationIsFinished(trajectory);
 
@@ -116,7 +169,14 @@ public class Auto {
     }
 
     private static boolean translationIsFinished(AutoTrajectory trajectory, Distance epsilonDist) {
-
+        /**
+         * Checks if the translation is finished. Used in {@link #isFinished(AutoTrajectory, Distance)}
+         * 
+         * @args AutoTrajectory trajectory, Distance epsilonDist
+         * @author Max Clementson & Justin Barratta
+         * @since 2026-01-19
+         * @return boolean
+         */
         Pose2d currentPose = swerve.getPose();
         Pose2d finalPose = trajectory.getFinalPose().get();
 
@@ -128,6 +188,14 @@ public class Auto {
     }
 
     private static boolean rotationIsFinished(AutoTrajectory trajectory) {
+        /**
+         * Checks if the rotation is finished. Used in {@link #isFinished(AutoTrajectory, Distance)}
+         * 
+         * @args AutoTrajectory trajectory
+         * @author Max Clementson & Justin Barratta
+         * @since 2026-01-19
+         * @return boolean
+         */
         Pose2d currentPose = swerve.getPose();
         Pose2d finalPose = trajectory.getFinalPose().get();
         Angle epsilonAngle = AutoConstants.kAutoAngleEpsilon;
@@ -138,7 +206,14 @@ public class Auto {
     }
 
     public static Command cmdWithAccuracy(AutoTrajectory trajectory, Time timeout, Distance epsilonDist) {
-
+        /**
+         * Creates a command with accuracy. Used in basically all the routines.
+         * 
+         * @args AutoTrajectory trajectory, Time timeout, Distance epsilonDist
+         * @author Max Clementson & Justin Barratta
+         * @since 2026-01-19
+         * @return Command
+         */
         return Commands.defer(
                 () -> new FunctionalCommand(
                         trajectory.cmd()::initialize,

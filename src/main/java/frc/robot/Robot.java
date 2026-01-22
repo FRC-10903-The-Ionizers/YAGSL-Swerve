@@ -24,6 +24,14 @@ public class Robot extends TimedRobot {
     private Auto auto;
 
     public Robot(){
+        /**
+         * Robot constructor for the robot.
+         * 
+         * @args None
+         * @author Max Clementson & Jake Xie
+         * @since 2025-10-smth
+         * @return void
+         */
         System.out.println("Robot initializing");
         robotContainer = new RobotContainer();
         Swerve swerve = robotContainer.getSwerve();
@@ -54,6 +62,14 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
+        /**
+         * Schedules the autonomous command, runs automatically when the robot is in autonomous mode.
+         * 
+         * @args None
+         * @author Max Clementson & Jake Xie
+         * @since 2025-10-smth
+         * @return void
+         */
         timer.restart();
         Command autoCommand = auto.getAutoCommand();
 
@@ -66,12 +82,21 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousPeriodic() {
-        
+        /**
+         * @todo Remove this unless needed
+         */
     }
 
     @Override
     public void teleopInit() {
-
+        /**
+         * Initializes the teleop mode.
+         * 
+         * @args None
+         * @author Max Clementson & Jake Xie
+         * @since 2025-10-smth
+         * @return void
+         */
         Swerve swerve = robotContainer.getSwerve();
         Controller controller = robotContainer.getController();
         TeleopDriveCommand teleopDriveCommand = new TeleopDriveCommand(swerve, controller);
@@ -81,16 +106,34 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
-        
+        /**
+         * @todo Remove this unless needed
+         */
     }
 
     @Override
     public void teleopExit() {
+        /**
+         * Exits the teleop mode, runs when the robot is no longer in teleop mode.
+         * 
+         * @args None
+         * @author Max Clementson & Jake Xie
+         * @since 2025-10-smth
+         * @return void
+         */
         Swerve swerve = robotContainer.getSwerve();
         swerve.removeDefaultCommand();
     }
 
     private boolean isRedAlliance() {
+        /**
+         * Checks if the robot is on the red alliance.
+         * 
+         * @args None
+         * @author Max Clementson & Jake Xie
+         * @since 2025-10-smth
+         * @return boolean 
+         */
         return DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Red);
     }
 }

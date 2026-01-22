@@ -45,6 +45,13 @@ import java.util.List;
 import frc.robot.Constants;
 
  public class Vision extends SubsystemBase{
+    /**
+     * Vision subsystem for the robot - used to estimate the robot's pose based on April Tags using PhotonVision.
+     * Check out clickup knowledge base for more information on photonvision debugging.
+     * @author Max Clementson
+     * @since 2025-10-smth
+     * 
+     */
      private final PhotonCamera camera;
      private final PhotonPoseEstimator photonEstimator;
      private Matrix<N3, N1> curStdDevs;
@@ -52,6 +59,14 @@ import frc.robot.Constants;
 
 
      public Vision(Swerve swerve) {
+        /**
+         * Vision constructor for the robot.
+         * 
+         * @args Swerve swerve
+         * @author Max Clementson
+         * @since 2025-10-smth
+         * @return void
+         */
         this.swerve = swerve;
         camera = new PhotonCamera(Constants.Vision.kAprilCameraName);
 
@@ -62,6 +77,14 @@ import frc.robot.Constants;
 
  
      public void periodic() {
+        /**
+         * Periodic method for the vision subsystem. Updates the robot's pose based on April Tags - gets standard deviations for the pose estimation.
+         * 
+         * @args None
+         * @author Max Clementson
+         * @since 2025-10-smth
+         * @return void
+         */
          Optional<EstimatedRobotPose> visionEst = Optional.empty();
          for (var change : camera.getAllUnreadResults()) {
              visionEst = photonEstimator.update(change);
@@ -85,6 +108,15 @@ import frc.robot.Constants;
       * @param targets All targets in this camera frame
       */
      private void updateEstimationStdDevs(
+        /**
+         * Updates the standard deviations for the pose estimation. 
+         * Tbh idk how this works but i think its from docs. - sid
+         * 
+         * @args Optional<EstimatedRobotPose> estimatedPose, List<PhotonTrackedTarget> targets
+         * @author Max Clementson
+         * @since 2025-10-smth
+         * @return void
+         */
              Optional<EstimatedRobotPose> estimatedPose, List<PhotonTrackedTarget> targets) {
          if (estimatedPose.isEmpty()) {
              // No pose input. Default to single-tag std devs
@@ -133,6 +165,14 @@ import frc.robot.Constants;
       * only be used when there are targets visible.
       */
      public Matrix<N3, N1> getEstimationStdDevs() {
+        /**
+         * See docs from {@link #updateEstimationStdDevs()}
+         * 
+         * @args None
+         * @author Max Clementson
+         * @since 2025-10-smth
+         * @return Matrix<N3, N1> curStdDevs
+         */
          return curStdDevs;
      }
 

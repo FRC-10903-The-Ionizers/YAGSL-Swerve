@@ -6,6 +6,12 @@ import frc.robot.subsystems.Swerve;
 import frc.robot.util.Controller;
 
 public class TeleopDriveToObject extends Command {
+    /**
+     * TeleopDriveToObject command for the robot. Used for driving the robot to an object (represented by a Translation2d)
+     * 
+     * @author Max Clementson
+     * @since 2026-01-15
+     */
     private final Swerve swerve;
     private final Controller controller;
 

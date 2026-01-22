@@ -14,14 +14,32 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Time;
 
 public class Constants {
+    /**
+     * Constants class for the robot.
+     * 
+     * @author Max Clementson & Jake Xie
+     * @since 2025-10-smth
+     */
 
     public static class DriveConstants {
+        /**
+         * Drive constants for the robot.
+         * 
+         * @author Max Clementson & Jake Xie
+         * @since 2025-10-smth
+         */
         public static final double kControllerDriveMultiplier = 1.0;
         public static final double kControllerRotationMultiplier = 2.0;
         public static final double kAutoDriveMultiplier = 4.5;
         public static final double kMinimumDistanceToStop = 0.1;
     }
     public static class Vision {
+        /**
+         * Vision constants for the robot. Make sure to set the camera names in case u have different cameras.
+         * 
+         * @author Max Clementson & Jake Xie
+         * @since 2025-10-smth
+         */
         public static String kAprilCameraName = "Arducam_OV9281_USB_Camera";
         public static String kObjectCameraName = "Arducam_OV9782_USB_Camera";
         public static Transform3d kRobotToCam = new Transform3d();
@@ -32,6 +50,12 @@ public class Constants {
     }
 
     public static class AutoConstants {
+        /**
+         * Auto constants for the robot.
+         * 
+         * @author Max Clementson & Jake Xie
+         * @since 2025-10-smth
+         */
         public static AutoFactory kAutoFactory;
         public static final double kDelayTime = 0.08;
         public static final Angle kAutoAngleEpsilon = Units.Degrees.of(1.0);

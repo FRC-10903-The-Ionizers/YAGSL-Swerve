@@ -4,6 +4,12 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants;
 
 public class Controller {
+    /**
+     * Controller class for the robot.
+     * 
+     * @author Max Clementson & Jake Xie
+     * @since 2026-01-19
+     */
     private final XboxController controller;
 
     public Controller(int port) {

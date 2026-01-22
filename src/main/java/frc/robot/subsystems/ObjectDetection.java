@@ -11,6 +11,20 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import frc.robot.Constants;
 
 public class ObjectDetection extends SubsystemBase {
+   /**
+    * ObjectDetection subsystem for detecting objects using PhotonVision.
+    * 
+    * This subsystem is used to detect objects in the field of view of the camera.
+    * It uses the PhotonVision library to detect objects and estimate their position.
+    * Used to align the robot to detected objects.
+    * 
+    * @filename ObjectDetection.java
+    * @author Siddhartha Hiremath
+    * @since 2026-01-21
+    * @todo Still need to implement movement side of object detection,
+    *       also grouping targets together for better throughput.
+    */
+
    private final PhotonCamera camera;
    private final PhotonPoseEstimator photonEstimator;
    private double yaw;
@@ -24,6 +38,13 @@ public class ObjectDetection extends SubsystemBase {
       photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
    }
    public void periodic() {
+      /**
+       * Periodic method for detecting objects using PhotonVision.
+       * 
+       * @args None
+       * @author Siddhartha Hiremath
+       * @return void
+       */
       var result = camera.getLatestResult();
       boolean hasTargets = result.hasTargets();
       //System.out.print(result);
@@ -41,6 +62,12 @@ public class ObjectDetection extends SubsystemBase {
    }
 
    public double getYaw() {
+      /**
+       * Get the yaw of the detected object.
+       * 
+       * @args None
+       * @return double yaw
+       */
       if (!currentlyTracking){
          return 10903;
       }
@@ -48,6 +75,12 @@ public class ObjectDetection extends SubsystemBase {
    }
 
    public boolean getDetectionOn(){
+      /**
+       * Get the detection status of the object.
+       * 
+       * @args None
+       * @return boolean objectDetectionOn
+       */
       return objectDetectionOn;
    }
 }

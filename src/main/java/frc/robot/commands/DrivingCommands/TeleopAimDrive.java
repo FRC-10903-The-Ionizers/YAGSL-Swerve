@@ -7,6 +7,12 @@ import frc.robot.subsystems.Swerve;
 import frc.robot.util.Controller;
 
 public class TeleopAimDrive extends Command {
+    /**
+     * TeleopAimDrive command for the robot, used for aiming the robot to a point (represented by a Pose2d)
+     * 
+     * @author Max Clementson
+     * @since 2026-01-15
+     */
     private final Swerve swerve;
     private final Controller controller;
     private final Pose2d targetPose;

@@ -6,6 +6,12 @@ import frc.robot.subsystems.Swerve;
 import frc.robot.util.Controller;
 
 public class TeleopDriveCommand extends Command {
+    /**
+     * TeleopDriveCommand command for the robot. Literally just drives the robot.
+     * 
+     * @author Max Clementson
+     * @since 2026-01-15
+     */
     private final Swerve swerve;
     private final Controller controller;
 
