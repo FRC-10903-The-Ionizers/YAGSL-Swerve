@@ -3,10 +3,15 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import static frc.robot.Constants.Vision.kRobotToCam;
-
-import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.CvSink;
+import edu.wpi.first.cscore.CvSource;
+import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.TimedRobot;
+import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Scalar;
+import org.opencv.imgproc.Imgproc;
 
 import frc.robot.Constants;
 
@@ -25,17 +30,50 @@ public class ObjectDetection extends SubsystemBase {
     *       also grouping targets together for better throughput.
     */
 
-   private final PhotonCamera camera;
-   private final PhotonPoseEstimator photonEstimator;
+
    private double yaw;
    private boolean currentlyTracking = false;
    private boolean objectDetectionOn = false;
-   public ObjectDetection() {
-      camera = new PhotonCamera(Constants.Vision.kObjectCameraName);
+   Thread m_visionThread;
 
-      photonEstimator =
-               new PhotonPoseEstimator(Constants.Vision.kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCam);
-      photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+   public ObjectDetection() {
+      m_visionThread =
+      new Thread(
+          () -> {
+            // Get the UsbCamera from CameraServer
+            UsbCamera camera = CameraServer.startAutomaticCapture();
+            // Set the resolution
+            camera.setResolution(640, 480);
+
+            // Get a CvSink. This will capture Mats from the camera
+            CvSink cvSink = CameraServer.getVideo();
+            // Setup a CvSource. This will send images back to the Dashboard
+            CvSource outputStream = CameraServer.putVideo("Rectangle", 640, 480);
+
+            // Mats are very memory expensive. Lets reuse this Mat.
+            Mat mat = new Mat();
+
+            // This cannot be 'true'. The program will never exit if it is. This
+            // lets the robot stop this thread when restarting robot code or
+            // deploying.
+            while (!Thread.interrupted()) {
+              // Tell the CvSink to grab a frame from the camera and put it
+              // in the source mat.  If there is an error notify the output.
+              if (cvSink.grabFrame(mat) == 0) {
+                // Send the output the error.
+                outputStream.notifyError(cvSink.getError());
+                // skip the rest of the current iteration
+                continue;
+              }
+              // Put a rectangle on the image
+              Imgproc.rectangle(
+                  mat, new Point(100, 100), new Point(400, 400), new Scalar(255, 255, 255), 5);
+              // Give the output stream a new image to display
+              outputStream.putFrame(mat);
+            }
+          });
+  m_visionThread.setDaemon(true);
+  m_visionThread.start();
    }
    public void periodic() {
       /**
@@ -45,20 +83,7 @@ public class ObjectDetection extends SubsystemBase {
        * @author Siddhartha Hiremath
        * @return void
        */
-      var result = camera.getLatestResult();
-      boolean hasTargets = result.hasTargets();
-      //System.out.print(result);
-      //System.out.println("object detection activated");
-      if (hasTargets) {
-         PhotonTrackedTarget bestTarget = result.getBestTarget();
-         yaw = bestTarget.getYaw();
-         // swerve.setRelativeTargetAngle(yaw);
-         // SmartDashboard.putNumber("Target Angle", yaw);
-         currentlyTracking = true;
-      }
-      else {
-         currentlyTracking = false;
-      }
+
    }
 
    public double getYaw() {
