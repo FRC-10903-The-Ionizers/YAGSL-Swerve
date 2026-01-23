@@ -42,6 +42,7 @@ public class Constants {
          */
         public static String kAprilCameraName = "Arducam_OV9281_USB_Camera";
         public static String kObjectCameraName = "Arducam_OV9782_USB_Camera";
+        public static Double kObjectCameraFovHorizontal = 70.0;
         public static Transform3d kRobotToCam = new Transform3d();
         public static AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);;
 

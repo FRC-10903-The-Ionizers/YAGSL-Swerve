@@ -18,6 +18,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+
 import java.io.File;
 import java.util.Queue;
 import java.util.function.Supplier;
@@ -35,7 +37,7 @@ public class RobotContainer {
     private final RegionHandler regionHandler = new RegionHandler(new File(Filesystem.getDeployDirectory(), "misc/regions.json"));
     private final Vision vision = new Vision(swerve);
     CommandXboxController xboxController = new CommandXboxController(0);
-    private final ObjectDetection detections = new ObjectDetection();
+    private final ObjectDetection detections = new ObjectDetection(swerve);
     
     public RobotContainer() {
         /**
@@ -94,7 +96,7 @@ public class RobotContainer {
         xboxController.a().whileTrue(new TeleopAimDrive(swerve, controller, new Pose2d(0, 0, null))); // Pass appropriate target pose
 
         // Bind aligning command to another button (e.g., B button)
-        xboxController.b().whileTrue(new TeleopDriveToObject(swerve, controller));
+        xboxController.b().onTrue(new InstantCommand(() -> detections.toggleObjectDetection()));
 
         // Bind go to point test command to the D pad
         xboxController.povUp().onTrue(new GoToPoint(swerve, new Pose2d(0, 2, Rotation2d.kZero)));
