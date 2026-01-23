@@ -27,8 +27,8 @@ public class RobotContainer {
     /**
      * RobotContainer class for the robot.
      * 
-     * @author Max Clementson & Jake Xie
-     * @since 2025-10-smth
+     * @author Max Clemetson, Jake Xie, Justin Baratta, Siddhartha Hiremath
+     * @since 2025-10
      */
     private final Swerve swerve = new Swerve();
     private final Controller controller = new Controller(0);
@@ -42,8 +42,8 @@ public class RobotContainer {
          * RobotContainer constructor for the robot.
          * 
          * @args None
-         * @author Max Clementson & Jake Xie
-         * @since 2025-10-smth
+         * @author Max Clemetson & Jake Xie
+         * @since 2025-10
          * @return void
          */
         // configure all triggers
@@ -62,8 +62,8 @@ public class RobotContainer {
          * Gets the swerve subsystem.
          * 
          * @args None
-         * @author Max Clementson & Jake Xie
-         * @since 2025-10-smth
+         * @author Max Clemetson & Jake Xie
+         * @since 2025-10
          * @return Swerve swerve
          */
         return swerve;
@@ -74,8 +74,8 @@ public class RobotContainer {
          * Gets the controller.
          * 
          * @args None
-         * @author Max Clementson & Jake Xie
-         * @since 2025-10-smth
+         * @author Max Clemetson & Jake Xie
+         * @since 2025-10
          * @return Controller controller
          */
         return controller;
@@ -86,8 +86,8 @@ public class RobotContainer {
          * Configures the bindings for the robot, add to this when u have more buttons that do stuff.
          * 
          * @args None
-         * @author Max Clementson & Jake Xie
-         * @since 2025-10-smth
+         * @author Max Clemetson & Jake Xie
+         * @since 2025-10
          * @return void
          */
         // Bind aiming command to a button (e.g., A button)

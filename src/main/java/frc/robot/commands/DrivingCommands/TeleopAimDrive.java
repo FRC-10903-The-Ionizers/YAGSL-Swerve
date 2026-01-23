@@ -10,7 +10,7 @@ public class TeleopAimDrive extends Command {
     /**
      * TeleopAimDrive command for the robot, used for aiming the robot to a point (represented by a Pose2d)
      * 
-     * @author Max Clementson
+     * @author Max Clemetson
      * @since 2026-01-15
      */
     private final Swerve swerve;

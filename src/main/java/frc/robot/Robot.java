@@ -28,8 +28,8 @@ public class Robot extends TimedRobot {
          * Robot constructor for the robot.
          * 
          * @args None
-         * @author Max Clementson & Jake Xie
-         * @since 2025-10-smth
+         * @author Max Clemetson, Jake Xie, Justin Baratta, Siddhartha Hiremath
+         * @since 2025-10
          * @return void
          */
         System.out.println("Robot initializing");
@@ -66,8 +66,8 @@ public class Robot extends TimedRobot {
          * Schedules the autonomous command, runs automatically when the robot is in autonomous mode.
          * 
          * @args None
-         * @author Max Clementson & Jake Xie
-         * @since 2025-10-smth
+         * @author Jake Xie & Justin Baratta
+         * @since 2026-01
          * @return void
          */
         timer.restart();
@@ -93,8 +93,8 @@ public class Robot extends TimedRobot {
          * Initializes the teleop mode.
          * 
          * @args None
-         * @author Max Clementson & Jake Xie
-         * @since 2025-10-smth
+         * @author Max Clemetson & Jake Xie
+         * @since 2025-10
          * @return void
          */
         Swerve swerve = robotContainer.getSwerve();
@@ -117,8 +117,8 @@ public class Robot extends TimedRobot {
          * Exits the teleop mode, runs when the robot is no longer in teleop mode.
          * 
          * @args None
-         * @author Max Clementson & Jake Xie
-         * @since 2025-10-smth
+         * @author Max Clemetson & Jake Xie
+         * @since 2025-10
          * @return void
          */
         Swerve swerve = robotContainer.getSwerve();
@@ -130,8 +130,8 @@ public class Robot extends TimedRobot {
          * Checks if the robot is on the red alliance.
          * 
          * @args None
-         * @author Max Clementson & Jake Xie
-         * @since 2025-10-smth
+         * @author Max Clemetson & Jake Xie
+         * @since 2025-10
          * @return boolean 
          */
         return DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Red);

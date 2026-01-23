@@ -18,7 +18,7 @@ public final class Elastic {
    * Elastic class for the robot.
    * 
    * @author Max Clementson & Jake Xie
-   * @since 2025-10-smth
+   * @since 2025-10
    */
   private static final StringTopic notificationTopic =
       NetworkTableInstance.getDefault().getStringTopic("/Elastic/RobotNotifications");

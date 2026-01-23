@@ -9,13 +9,19 @@ public class TeleopDriveCommand extends Command {
     /**
      * TeleopDriveCommand command for the robot. Literally just drives the robot.
      * 
-     * @author Max Clementson
+     * @author Max Clemetson
      * @since 2026-01-15
      */
     private final Swerve swerve;
     private final Controller controller;
 
     public TeleopDriveCommand(Swerve swerve, Controller controller) {
+        /**
+         * Constructor which sets swerve and controller class variables
+         * 
+         * @param swerve: the swerve drive
+         * @param controller: the PID controller
+         */
         this.swerve = swerve;
         this.controller = controller;
         addRequirements(swerve);
@@ -23,6 +29,9 @@ public class TeleopDriveCommand extends Command {
 
     @Override
     public void execute() {
+        /**
+         * Method that drives the swerves
+         */
         swerve.drive(
             new Translation2d(controller.getDriveX(), controller.getDriveY()),
             controller.getRotation(),

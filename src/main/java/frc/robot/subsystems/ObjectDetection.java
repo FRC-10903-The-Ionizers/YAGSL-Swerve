@@ -91,6 +91,7 @@ public class ObjectDetection extends SubsystemBase {
        * Get the yaw of the detected object.
        * 
        * @args None
+       * @author Siddhartha Hiremath
        * @return double yaw
        */
       if (!currentlyTracking){
@@ -105,6 +106,7 @@ public class ObjectDetection extends SubsystemBase {
        * 
        * @args None
        * @return boolean objectDetectionOn
+       * @author Siddhartha Hiremath
        */
       return objectDetectionOn;
    }

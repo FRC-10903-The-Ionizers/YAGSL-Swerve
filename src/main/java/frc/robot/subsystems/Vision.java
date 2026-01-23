@@ -48,8 +48,8 @@ import frc.robot.Constants;
     /**
      * Vision subsystem for the robot - used to estimate the robot's pose based on April Tags using PhotonVision.
      * Check out clickup knowledge base for more information on photonvision debugging.
-     * @author Max Clementson
-     * @since 2025-10-smth
+     * @author Max Clemetson, Siddhartha Hiremath
+     * @since 2025-11
      * 
      */
      private final PhotonCamera camera;
@@ -63,8 +63,8 @@ import frc.robot.Constants;
          * Vision constructor for the robot.
          * 
          * @args Swerve swerve
-         * @author Max Clementson
-         * @since 2025-10-smth
+         * @author Max Clemetson, Siddhartha Hiremath
+         * @since 2025-11
          * @return void
          */
         this.swerve = swerve;
@@ -81,8 +81,8 @@ import frc.robot.Constants;
          * Periodic method for the vision subsystem. Updates the robot's pose based on April Tags - gets standard deviations for the pose estimation.
          * 
          * @args None
-         * @author Max Clementson
-         * @since 2025-10-smth
+         * @author Max Clemetson, Siddhartha Hiremath
+         * @since 2025-11
          * @return void
          */
          Optional<EstimatedRobotPose> visionEst = Optional.empty();
@@ -113,8 +113,8 @@ import frc.robot.Constants;
          * Tbh idk how this works but i think its from docs. - sid
          * 
          * @args Optional<EstimatedRobotPose> estimatedPose, List<PhotonTrackedTarget> targets
-         * @author Max Clementson
-         * @since 2025-10-smth
+         * @author Max Clemetson, Siddhartha Hiremath
+         * @since 2025-11
          * @return void
          */
              Optional<EstimatedRobotPose> estimatedPose, List<PhotonTrackedTarget> targets) {
@@ -169,8 +169,8 @@ import frc.robot.Constants;
          * See docs from {@link #updateEstimationStdDevs()}
          * 
          * @args None
-         * @author Max Clementson
-         * @since 2025-10-smth
+         * @author Max Clemetson. Siddhartha Hiremath
+         * @since 2025-11
          * @return Matrix<N3, N1> curStdDevs
          */
          return curStdDevs;

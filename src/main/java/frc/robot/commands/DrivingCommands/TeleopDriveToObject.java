@@ -9,7 +9,7 @@ public class TeleopDriveToObject extends Command {
     /**
      * TeleopDriveToObject command for the robot. Used for driving the robot to an object (represented by a Translation2d)
      * 
-     * @author Max Clementson
+     * @author Max Clemetson
      * @since 2026-01-15
      */
     private final Swerve swerve;
