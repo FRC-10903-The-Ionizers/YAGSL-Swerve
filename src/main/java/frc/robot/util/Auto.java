@@ -28,7 +28,7 @@ public class Auto {
     /**
      * Auto class for the robot.
      * Uses choreo library to create autonomous routines.
-     * @author Max Clementson & Justin Barratta
+     * @author Justin Baratta & Jake Xie
      * @since 2026-01-19
      * @todo Auto branching needs to be implemented.
      */
@@ -41,8 +41,8 @@ public class Auto {
          * Auto constructor for the robot.
          * 
          * @args AutoFactory factory, Swerve swerve
-         * @author Max Clementson & Justin Barratta
-         * @since 2025-10-smth
+         * @author Justin Baratta & Jake Xie
+         * @since 2026-01-19
          * @return void
          */
         // Make something to display on the GUI that allows the user to select the
@@ -62,10 +62,10 @@ public class Auto {
 
     public AutoRoutine tRoutine() {
         /**
-         * Example routine for the robot.
+         * Test routine for the robot.
          * 
          * @args None
-         * @author Max Clementson & Justin Barratta
+         * @author Justin Baratta & Jake Xie
          * @since 2026-01-19
          * @return AutoRoutine
          */
@@ -87,10 +87,10 @@ public class Auto {
 
     public AutoRoutine loopRoutine() {
         /**
-         * Loop routine for the robot - probably goes in a loop around the field.
+         * Test loop routine for the robot - drives robot in small loop.
          * 
          * @args None
-         * @author Max Clementson & Justin Barratta
+         * @author Justin Baratta & Jake Xie
          * @since 2026-01-19
          * @return AutoRoutine
          */
@@ -114,7 +114,7 @@ public class Auto {
          * Moves forward, then loops around the field.
          * 
          * @args None
-         * @author Max Clementson & Justin Barratta
+         * @author Justin Baratta & Jake Xie
          * @since 2026-01-19
          * @return AutoRoutine
          */
@@ -143,7 +143,7 @@ public class Auto {
          * Gets the selected auto command from the auto chooser.
          * 
          * @args None
-         * @author Max Clementson & Justin Barratta
+         * @author Justin Baratta & Jake Xie
          * @since 2026-01-19
          * @return Command
          */
@@ -153,9 +153,10 @@ public class Auto {
     private static boolean isFinished(AutoTrajectory trajectory, Distance epsilonDist) {
         /**
          * Checks if the trajectory is finished, based on whether translation and rotation are finished.
+         * This code was inspired by Citrus Circuits' 2025 code.
          * 
          * @args AutoTrajectory trajectory, Distance epsilonDist
-         * @author Max Clementson & Justin Barratta
+         * @author Justin Baratta & Jake Xie, From 2025 Citrus Circuits Team
          * @since 2026-01-19
          * @return boolean
          */
@@ -171,9 +172,10 @@ public class Auto {
     private static boolean translationIsFinished(AutoTrajectory trajectory, Distance epsilonDist) {
         /**
          * Checks if the translation is finished. Used in {@link #isFinished(AutoTrajectory, Distance)}
+         * This code was inspired by Citrus Circuits' 2025 code.
          * 
          * @args AutoTrajectory trajectory, Distance epsilonDist
-         * @author Max Clementson & Justin Barratta
+         * @author Justin Baratta & Jake Xie, From 2025 Citrus Circuits Team
          * @since 2026-01-19
          * @return boolean
          */
@@ -190,9 +192,10 @@ public class Auto {
     private static boolean rotationIsFinished(AutoTrajectory trajectory) {
         /**
          * Checks if the rotation is finished. Used in {@link #isFinished(AutoTrajectory, Distance)}
+         * This code was inspired by Citrus Circuits' 2025 code.
          * 
          * @args AutoTrajectory trajectory
-         * @author Max Clementson & Justin Barratta
+         * @author Justin Baratta & Jake Xie, From 2025 Citrus Circuits Team
          * @since 2026-01-19
          * @return boolean
          */
@@ -208,9 +211,10 @@ public class Auto {
     public static Command cmdWithAccuracy(AutoTrajectory trajectory, Time timeout, Distance epsilonDist) {
         /**
          * Creates a command with accuracy. Used in basically all the routines.
+         * This code was inspired by Citrus Circuits' 2025 code.
          * 
          * @args AutoTrajectory trajectory, Time timeout, Distance epsilonDist
-         * @author Max Clementson & Justin Barratta
+         * @author Justin Baratta & Jake Xie, 2025 Citrus Circuits Team
          * @since 2026-01-19
          * @return Command
          */

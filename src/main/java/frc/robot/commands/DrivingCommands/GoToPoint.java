@@ -10,8 +10,8 @@ public class GoToPoint extends Command {
   /**
    * GoToPoint command for the robot.
    * 
-   * @author Siddhartha Hiremath, Justin Barratta - refactored from original code
-   * @since 2025-10-smth
+   * @author Justin Baratta - refactored from original code
+   * @since 2026-01-20
    */
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Swerve swerve;
@@ -23,7 +23,7 @@ public class GoToPoint extends Command {
      * GoToPoint constructor for the robot.
      * 
      * @args Swerve subsystem, Pose2d targetPose
-     * @author Siddhartha Hiremath, Justin Barratta - refactored from original code
+     * @author Justin Baratta - refactored from original code
      * @since 2026-01-21
      * @return void
      */
@@ -42,7 +42,7 @@ public class GoToPoint extends Command {
      * Executes the GoToPoint command.
      * Periodically updates the translation and heading distance to the target pose by subtracting the current pose from the target pose.
      * @args None
-     * @author Siddhartha Hiremath, Justin Barratta - refactored from original code
+     * @author Justin Baratta - refactored from original code
      * @since 2026-01-21
      * @return void
      */
@@ -64,7 +64,7 @@ public class GoToPoint extends Command {
      * Checks if the GoToPoint command is finished based on the minimum distance to stop.
      * 
      * @args None
-     * @author Siddhartha Hiremath, Justin Barratta - refactored from original code
+     * @author Justin Baratta - refactored from original code
      * @since 2026-01-21
      * @return boolean
      */

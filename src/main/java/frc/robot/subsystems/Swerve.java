@@ -25,8 +25,8 @@ public class Swerve extends SubsystemBase {
     /**
      * Swerve subsystem for the robot.
      * 
-     * @author Max Clementson & Jake Xie
-     * @since 2025-10-smth
+     * @author Max Clemetson, Jake Xie, Justin Baratta & Siddhartha Hiremath
+     * @since 2025-10
      */
     private SwerveDrive swerveDrive;
     private boolean initialized = false;
@@ -41,8 +41,8 @@ public class Swerve extends SubsystemBase {
          * Swerve constructor for the robot.
          * 
          * @args None
-         * @author Max Clementson & Jake Xie
-         * @since 2025-10-smth
+         * @author Max Clemetson & Jake Xie
+         * @since 2025-10
          * @return void
          */
         try {
@@ -76,8 +76,8 @@ public class Swerve extends SubsystemBase {
          * 
          * Updates the field position of the robot.
          * @args None
-         * @author Max Clementson & Jake Xie
-         * @since 2025-10-smth
+         * @author Max Clemetson & Jake Xie
+         * @since 2025-10
          * @return void
          */
         if (!initialized)
@@ -92,7 +92,7 @@ public class Swerve extends SubsystemBase {
          * 
          * @args Pose2d pose
          * @author Max Clementson & Jake Xie
-         * @since 2025-10-smth
+         * @since 2025-10
          * @return Pose2d
          */
         if (!initialized)
@@ -109,7 +109,7 @@ public class Swerve extends SubsystemBase {
          * 
          * @args None
          * @author Max Clementson & Jake Xie
-         * @since 2025-10-smth
+         * @since 2025-10
          * @return Field2d
          */
         return field;
@@ -120,8 +120,8 @@ public class Swerve extends SubsystemBase {
          * Gets the pose of the robot.
          * 
          * @args None
-         * @author Max Clementson & Jake Xie
-         * @since 2025-10-smth
+         * @author Max Clemetson & Jake Xie
+         * @since 2025-10
          * @return Pose2d
          */
         if (!initialized)
@@ -135,8 +135,8 @@ public class Swerve extends SubsystemBase {
          * Follows a trajectory for the robot using elastic.
          * 
          * @args SwerveSample sample
-         * @author Max Clementson & Jake Xie
-         * @since 2025-10-smth
+         * @author Max Clemetson & Justin Baratta
+         * @since 2025-10
          * @return void
          */
 
@@ -162,8 +162,8 @@ public class Swerve extends SubsystemBase {
          * Gets the swerve drive object.
          * 
          * @args None
-         * @author Max Clementson & Jake Xie
-         * @since 2025-10-smth
+         * @author Max Clemetson & Jake Xie
+         * @since 2025-10
          * @return SwerveDrive
          */
         return swerveDrive;
@@ -171,11 +171,12 @@ public class Swerve extends SubsystemBase {
 
     public void addVisionMeasurement(Pose2d visionPose, double timestamp, Matrix<N3, N1> estimationStdDevs) {
         /**
-         * Adds a vision measurement to the swerve drive, uses standard deviations to weight the measurement along with swerve drive's odometry.
+         * Adds a vision measurement to the swerve drive, uses standard 
+         * deviations to weight the measurement along with swerve drive's odometry.
          * 
          * @args Pose2d visionPose, double timestamp, Matrix<N3, N1> estimationStdDevs
-         * @author Max Clementson & Jake Xie
-         * @since 2025-10-smth
+         * @author Max Clemetson & Jake Xie
+         * @since 2025-10
          * @return void
          */
         if (!initialized){
@@ -190,8 +191,8 @@ public class Swerve extends SubsystemBase {
          * Locks the robot's orientation to a point on the field.
          * 
          * @args double targetPointX, double targetPointY
-         * @author Siddhartha Hiremath, Justin Barratta - refactored from original code
-         * @since 2025-10-smth
+         * @author Justin Baratta - refactored from original code written by Siddhartha Hiremath
+         * @since 2025-10
          * @return double target_angle
          */
         //get position
@@ -213,8 +214,8 @@ public class Swerve extends SubsystemBase {
          * Drives the robot while locked to a point on the field.
          * 
          * @args Translation2d translation, boolean isFieldRelative, Pose2d targetPose
-         * @author Siddhartha Hiremath, Justin Barratta - refactored from original code
-         * @since 2025-10-smth
+         * @author Justin Baratta - refactored from original code
+         * @since 2026-01-11
          * @return void
          */
         double targetAngle = lockToPoint(targetPose.getX(), targetPose.getY());
@@ -228,8 +229,8 @@ public class Swerve extends SubsystemBase {
          * Drives the robot.
          * 
          * @args Translation2d translation, double rotation, boolean isFieldRelative
-         * @author Max Clementson & Jake Xie
-         * @since 2025-10-smth
+         * @author Justin Baratta
+         * @since 2026-01
          * @return void
          */
         swerveDrive.drive(translation, rotation, isFieldRelative, false);
