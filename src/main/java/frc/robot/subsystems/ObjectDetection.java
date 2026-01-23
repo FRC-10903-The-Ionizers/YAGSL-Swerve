@@ -12,7 +12,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
-
+import org.opencv.core.Core;
 import frc.robot.Constants;
 
 public class ObjectDetection extends SubsystemBase {
@@ -65,11 +65,17 @@ public class ObjectDetection extends SubsystemBase {
                 // skip the rest of the current iteration
                 continue;
               }
-              // Put a rectangle on the image
-              Imgproc.rectangle(
-                  mat, new Point(100, 100), new Point(400, 400), new Scalar(255, 255, 255), 5);
+              // filter for yellow objects using HSV color space
+              Mat hsvMat = new Mat();
+              Imgproc.cvtColor(mat, hsvMat, Imgproc.COLOR_BGR2HSV);
+              Mat yellowMask = new Mat();
+              Core.inRange(hsvMat, new Scalar(20, 100, 100), new Scalar(30, 255, 255), yellowMask);
+              Mat filteredMat = new Mat();
+              Core.bitwise_and(mat, mat, filteredMat, yellowMask);
+
               // Give the output stream a new image to display
               outputStream.putFrame(mat);
+
             }
           });
   m_visionThread.setDaemon(true);
