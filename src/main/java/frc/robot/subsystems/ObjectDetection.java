@@ -17,6 +17,8 @@ import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.core.Core;
+import org.opencv.core.CvType;
+
 import frc.robot.Constants;
 
 public class ObjectDetection extends SubsystemBase {
@@ -53,8 +55,10 @@ public class ObjectDetection extends SubsystemBase {
 
             // Get a CvSink. This will capture Mats from the camera
             CvSink cvSink = CameraServer.getVideo();
+            CvSource densitySource = CameraServer.putVideo("Density-Camera", 640, 480);
+            CvSource transformSource = CameraServer.putVideo("Transform Source", 0, 0);
             // Setup a CvSource. This will send images back to the Dashboard
-            CvSource outputStream = CameraServer.putVideo("Rectangle", 640, 480);
+            CvSource outputStream = CameraServer.putVideo("ObjectVision-Camera", 640, 480);
 
             // Mats are very memory expensive. Lets reuse this Mat.
             Mat mat = new Mat();
@@ -78,24 +82,44 @@ public class ObjectDetection extends SubsystemBase {
               Mat yellowMask = new Mat();
               Core.inRange(hsvMat, new Scalar(20, 100, 100), new Scalar(30, 255, 255), yellowMask);
 
+              Mat invertcolormatrix = new Mat(yellowMask.rows(), yellowMask.cols(), yellowMask.type(), new Scalar(255, 255, 255));
+              Mat invertedYellowMask = new Mat();
+              Core.subtract(invertcolormatrix, yellowMask, invertedYellowMask);
+
               // take distance transform of yellow mask
               Mat distanceTransform = new Mat();
-              Imgproc.distanceTransform(yellowMask, distanceTransform, Imgproc.DIST_L2, 3);
+              Imgproc.distanceTransform(invertedYellowMask, distanceTransform, Imgproc.DIST_L2, 3);
+               distanceTransform.convertTo(distanceTransform, CvType.CV_32F);
+
+              Core.subtract(invertcolormatrix, distanceTransform, distanceTransform);
+
+              transformSource.putFrame(distanceTransform);
 
               Mat densityMap = new Mat();
+
               // create density map by applying box filter
               Imgproc.boxFilter(yellowMask, densityMap, -1, new Size(201, 201));
+              densitySource.putFrame(densityMap);
 
               // normalize both to 1
-              Core.normalize(distanceTransform, distanceTransform, 0, 1, Core.NORM_MINMAX);
-              Core.normalize(densityMap, densityMap, 0, 1, Core.NORM_MINMAX);
+              //Core.normalize(distanceTransform, distanceTransform, 0, 1, Core.NORM_MINMAX);
+              //Core.normalize(densityMap, densityMap, 0, 1, Core.NORM_MINMAX);
 
               // create 60-40 split of distance transform and density map
 
               Mat weightedMap = new Mat();
+
+              // log types
+
+              // change type to be equivelent
+              
+              densityMap.convertTo(densityMap, CvType.CV_32F);
+              //System.out.println(distanceTransform.depth());
+              //System.out.println(densityMap.depth());
+
               Core.addWeighted(distanceTransform, 0.6, densityMap, 0.4, 0, weightedMap);
 
-              outputStream.putFrame(yellowMask);
+              outputStream.putFrame(weightedMap);
               // find brightest point in heatmap
                Core.MinMaxLocResult mmr = Core.minMaxLoc(yellowMask);
                // get coordinates of brightest point
@@ -103,7 +127,7 @@ public class ObjectDetection extends SubsystemBase {
                // convert to angle in radians
                double fovHorizontal = Constants.Vision.kObjectCameraFovHorizontal;
                double relativeYaw = (brightestPoint.x - mat.width() / 2.0) / mat.width() * fovHorizontal;
-               setYaw(relativeYaw);
+               //setYaw(relativeYaw);
             }
           });
   m_visionThread.setDaemon(true);
@@ -128,7 +152,7 @@ public class ObjectDetection extends SubsystemBase {
          // swerve.drive(new edu.wpi.first.math.geometry.Translation2d(0, 0), currentYaw - Math.toRadians(absoluteTargetYaw), false);
          //}, swerve);
          Command cmd = Commands.run(() -> {
-            swerve.drive(new edu.wpi.first.math.geometry.Translation2d(0, 0), currentYaw + Math.toRadians(absoluteTargetYaw), false);
+            swerve.drive(new edu.wpi.first.math.geometry.Translation2d(0, 0), -(currentYaw - Math.toRadians(absoluteTargetYaw)), false);
          }, swerve);
          CommandScheduler.getInstance().schedule(cmd);
       }
