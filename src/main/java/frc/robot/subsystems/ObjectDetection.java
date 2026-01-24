@@ -77,14 +77,24 @@ public class ObjectDetection extends SubsystemBase {
               Imgproc.cvtColor(mat, hsvMat, Imgproc.COLOR_BGR2HSV);
               Mat yellowMask = new Mat();
               Core.inRange(hsvMat, new Scalar(20, 100, 100), new Scalar(30, 255, 255), yellowMask);
-              // run gaussian blur to create heatmap
-              Imgproc.boxFilter(yellowMask, yellowMask, -1, new Size(201, 201));
-               System.out.println("Gaussian Blur Applied");
-              // multiply everything by 5 in brightness
-               Core.multiply(yellowMask, new Scalar(2.5), yellowMask);
-               // run gaussian blur again to smooth out heatmap
-               //Imgproc.GaussianBlur(yellowMask, yellowMask, new Size(201, 201), 0);
-              // Give the output stream a new image to display
+
+              // take distance transform of yellow mask
+              Mat distanceTransform = new Mat();
+              Imgproc.distanceTransform(yellowMask, distanceTransform, Imgproc.DIST_L2, 3);
+
+              Mat densityMap = new Mat();
+              // create density map by applying box filter
+              Imgproc.boxFilter(yellowMask, densityMap, -1, new Size(201, 201));
+
+              // normalize both to 1
+              Core.normalize(distanceTransform, distanceTransform, 0, 1, Core.NORM_MINMAX);
+              Core.normalize(densityMap, densityMap, 0, 1, Core.NORM_MINMAX);
+
+              // create 60-40 split of distance transform and density map
+
+              Mat weightedMap = new Mat();
+              Core.addWeighted(distanceTransform, 0.6, densityMap, 0.4, 0, weightedMap);
+
               outputStream.putFrame(yellowMask);
               // find brightest point in heatmap
                Core.MinMaxLocResult mmr = Core.minMaxLoc(yellowMask);
