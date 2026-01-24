@@ -56,6 +56,7 @@ public class ObjectDetection extends SubsystemBase {
             // Get a CvSink. This will capture Mats from the camera
             CvSink cvSink = CameraServer.getVideo();
             CvSource densitySource = CameraServer.putVideo("Density-Camera", 640, 480);
+            CvSource binarySource = CameraServer.putVideo("Binary-Camera", 640, 480);
             CvSource transformSource = CameraServer.putVideo("Transform Source", 640, 480);
             // Setup a CvSource. This will send images back to the Dashboard
             CvSource outputStream = CameraServer.putVideo("ObjectVision-Camera", 640, 480);
@@ -81,7 +82,11 @@ public class ObjectDetection extends SubsystemBase {
               Imgproc.cvtColor(mat, hsvMat, Imgproc.COLOR_BGR2HSV);
               Mat yellowMask = new Mat();
               Core.inRange(hsvMat, new Scalar(20, 100, 100), new Scalar(30, 255, 255), yellowMask);
+              binarySource.putFrame(yellowMask);
 
+              // fill in holes to create solid mask
+              Imgproc.morphologyEx(yellowMask, yellowMask, Imgproc.MORPH_CLOSE,
+              Imgproc.getStructuringElement(Imgproc.MORPH_ELLIPSE, new Size(5, 5)));
               Mat invertcolormatrix = new Mat(yellowMask.rows(), yellowMask.cols(), yellowMask.type(), new Scalar(255, 255, 255));
               Mat invertedYellowMask = new Mat();
               Core.subtract(invertcolormatrix, yellowMask, invertedYellowMask);
