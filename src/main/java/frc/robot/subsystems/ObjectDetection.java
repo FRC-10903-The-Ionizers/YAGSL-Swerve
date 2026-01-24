@@ -168,7 +168,7 @@ public class ObjectDetection extends SubsystemBase {
          //Commands.schedule(() -> {
          // swerve.drive(new edu.wpi.first.math.geometry.Translation2d(0, 0), currentYaw - Math.toRadians(absoluteTargetYaw), false);
          //}, swerve);
-         Command cmd = Commands.run(() -> {
+         Command cmd = Commands.runOnce(() -> {
             swerve.drive(new edu.wpi.first.math.geometry.Translation2d(0, 0), -(currentYaw - Math.toRadians(absoluteTargetYaw)), false);
          }, swerve);
          CommandScheduler.getInstance().schedule(cmd);
