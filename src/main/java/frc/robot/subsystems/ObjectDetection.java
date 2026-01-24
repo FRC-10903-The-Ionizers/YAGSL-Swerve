@@ -89,18 +89,23 @@ public class ObjectDetection extends SubsystemBase {
               // take distance transform of yellow mask
               Mat distanceTransform = new Mat();
               Imgproc.distanceTransform(invertedYellowMask, distanceTransform, Imgproc.DIST_L2, 3);
-               distanceTransform.convertTo(distanceTransform, CvType.CV_32F);
-
-              Core.subtract(invertcolormatrix, distanceTransform, distanceTransform);
-
-              Mat densityMap = new Mat();
 
               // create density map by applying box filter
+              Mat densityMap = new Mat();
               Imgproc.boxFilter(yellowMask, densityMap, -1, new Size(201, 201));
+
+              // Convert all mats to CV_32F for arithmetic operations
+              Mat invertFloat = new Mat();
+              distanceTransform.convertTo(distanceTransform, CvType.CV_32F);
+              invertcolormatrix.convertTo(invertFloat, CvType.CV_32F);
+              densityMap.convertTo(densityMap, CvType.CV_32F);
+
+              // Compute distance transform inversion
+              Core.subtract(invertFloat, distanceTransform, distanceTransform);
+              invertFloat.release();
 
               // create 60-40 split of distance transform and density map
               Mat weightedMap = new Mat();
-              densityMap.convertTo(densityMap, CvType.CV_32F);
               Core.addWeighted(distanceTransform, 0.6, densityMap, 0.4, 0, weightedMap);
 
               // find brightest point in heatmap
@@ -118,7 +123,7 @@ public class ObjectDetection extends SubsystemBase {
               transformSource.putFrame(displayTransform);
               densitySource.putFrame(densityMap);
               outputStream.putFrame(displayWeighted);
-              
+
                // get coordinates of brightest point
                Point brightestPoint = mmr.maxLoc;
                // convert to angle in radians
