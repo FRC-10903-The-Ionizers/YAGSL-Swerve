@@ -56,7 +56,7 @@ public class ObjectDetection extends SubsystemBase {
             // Get a CvSink. This will capture Mats from the camera
             CvSink cvSink = CameraServer.getVideo();
             CvSource densitySource = CameraServer.putVideo("Density-Camera", 640, 480);
-            CvSource transformSource = CameraServer.putVideo("Transform Source", 0, 0);
+            CvSource transformSource = CameraServer.putVideo("Transform Source", 640, 480);
             // Setup a CvSource. This will send images back to the Dashboard
             CvSource outputStream = CameraServer.putVideo("ObjectVision-Camera", 640, 480);
 
@@ -93,41 +93,49 @@ public class ObjectDetection extends SubsystemBase {
 
               Core.subtract(invertcolormatrix, distanceTransform, distanceTransform);
 
-              transformSource.putFrame(distanceTransform);
-
               Mat densityMap = new Mat();
 
               // create density map by applying box filter
               Imgproc.boxFilter(yellowMask, densityMap, -1, new Size(201, 201));
-              densitySource.putFrame(densityMap);
-
-              // normalize both to 1
-              //Core.normalize(distanceTransform, distanceTransform, 0, 1, Core.NORM_MINMAX);
-              //Core.normalize(densityMap, densityMap, 0, 1, Core.NORM_MINMAX);
 
               // create 60-40 split of distance transform and density map
-
               Mat weightedMap = new Mat();
-
-              // log types
-
-              // change type to be equivelent
-              
               densityMap.convertTo(densityMap, CvType.CV_32F);
-              //System.out.println(distanceTransform.depth());
-              //System.out.println(densityMap.depth());
-
               Core.addWeighted(distanceTransform, 0.6, densityMap, 0.4, 0, weightedMap);
 
-              outputStream.putFrame(weightedMap);
               // find brightest point in heatmap
-               Core.MinMaxLocResult mmr = Core.minMaxLoc(yellowMask);
+              Core.MinMaxLocResult mmr = Core.minMaxLoc(weightedMap);
+
+              // Normalize and convert all display mats to CV_8U for output
+              Mat displayTransform = new Mat();
+              Mat displayWeighted = new Mat();
+              Core.normalize(distanceTransform, displayTransform, 0, 255, Core.NORM_MINMAX);
+              Core.normalize(weightedMap, displayWeighted, 0, 255, Core.NORM_MINMAX);
+              displayTransform.convertTo(displayTransform, CvType.CV_8U);
+              displayWeighted.convertTo(displayWeighted, CvType.CV_8U);
+
+              // Output frames to dashboard
+              transformSource.putFrame(displayTransform);
+              densitySource.putFrame(densityMap);
+              outputStream.putFrame(displayWeighted);
+              
                // get coordinates of brightest point
                Point brightestPoint = mmr.maxLoc;
                // convert to angle in radians
                double fovHorizontal = Constants.Vision.kObjectCameraFovHorizontal;
                double relativeYaw = (brightestPoint.x - mat.width() / 2.0) / mat.width() * fovHorizontal;
                //setYaw(relativeYaw);
+
+              // Release Mats to prevent memory leaks
+              hsvMat.release();
+              yellowMask.release();
+              invertcolormatrix.release();
+              invertedYellowMask.release();
+              distanceTransform.release();
+              displayTransform.release();
+              densityMap.release();
+              weightedMap.release();
+              displayWeighted.release();
             }
           });
   m_visionThread.setDaemon(true);
