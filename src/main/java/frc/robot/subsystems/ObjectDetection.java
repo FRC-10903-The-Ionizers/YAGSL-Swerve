@@ -44,7 +44,39 @@ public class ObjectDetection extends SubsystemBase {
    Thread m_visionThread;
 
    public ObjectDetection(Swerve swerve) {
+      // Ensure OpenCV native library is loaded before creating any Mats to avoid UnsatisfiedLinkError
+      try {
+         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+      } catch (UnsatisfiedLinkError e) {
+         System.err.println("Failed to load OpenCV native library: " + e.getMessage());
+      }
+
       this.swerve = swerve;
+      // create an nxn Gaussian kernel (normalized). Adjust n as needed (odd n gives symmetric kernel)
+      int kernelSize = 31;
+      int downsampleFactor = 4;
+      Mat gaussianKernel = new Mat(kernelSize, kernelSize, CvType.CV_32F);
+      double sigma = kernelSize / 6.0; // ~3 sigma covers most of the kernel
+      double mean = (kernelSize - 1) / 2.0;
+      double sum = 0.0;
+
+      for (int r = 0; r < kernelSize; r++) {
+         for (int c = 0; c < kernelSize; c++) {
+            double dx = c - mean;
+            double dy = r - mean;
+            double v = Math.exp(-(dx * dx + dy * dy) / (2.0 * sigma * sigma));
+            gaussianKernel.put(r, c, v);
+            sum += v;
+         }
+      }
+
+      // normalize so the kernel sums to 1
+      for (int r = 0; r < kernelSize; r++) {
+         for (int c = 0; c < kernelSize; c++) {
+            double[] vv = gaussianKernel.get(r, c);
+            gaussianKernel.put(r, c, vv[0] / sum);
+         }
+      }
       m_visionThread =
       new Thread(
           () -> {
@@ -57,6 +89,8 @@ public class ObjectDetection extends SubsystemBase {
             CvSink cvSink = CameraServer.getVideo();
             CvSource densitySource = CameraServer.putVideo("Density-Camera", 640, 480);
             CvSource transformSource = CameraServer.putVideo("Transform Source", 640, 480);
+            CvSource yellowSource = CameraServer.putVideo("Yellow Source", 640, 480);
+
             // Setup a CvSource. This will send images back to the Dashboard
             CvSource outputStream = CameraServer.putVideo("ObjectVision-Camera", 640, 480);
 
@@ -81,18 +115,26 @@ public class ObjectDetection extends SubsystemBase {
               Imgproc.cvtColor(mat, hsvMat, Imgproc.COLOR_BGR2HSV);
               Mat yellowMask = new Mat();
               Core.inRange(hsvMat, new Scalar(20, 100, 100), new Scalar(30, 255, 255), yellowMask);
-
+               yellowSource.putFrame(yellowMask);
+            // downscale yellow mask for performance
+            // downscale yellow mask for performance (divide spatial dimensions by n; channels remain unchanged)
+               Size origSize = yellowMask.size();
+               Size downSize = new Size(origSize.width / downsampleFactor, origSize.height / downsampleFactor);
+               Imgproc.resize(yellowMask, yellowMask, downSize, 0, 0, Imgproc.INTER_AREA);
               Mat invertcolormatrix = new Mat(yellowMask.rows(), yellowMask.cols(), yellowMask.type(), new Scalar(255, 255, 255));
               Mat invertedYellowMask = new Mat();
-              Core.subtract(invertcolormatrix, yellowMask, invertedYellowMask);
-
+              //Core.subtract(invertcolormatrix, yellowMask, invertedYellowMask);
+            
               // take distance transform of yellow mask
               Mat distanceTransform = new Mat();
-              Imgproc.distanceTransform(invertedYellowMask, distanceTransform, Imgproc.DIST_L2, 3);
+              Imgproc.distanceTransform(yellowMask, distanceTransform, Imgproc.DIST_L2, 3);
 
               // create density map by applying box filter
               Mat densityMap = new Mat();
-              Imgproc.boxFilter(yellowMask, densityMap, -1, new Size(201, 201));
+              Imgproc.boxFilter(yellowMask, densityMap, -1, new Size(21, 21));
+              Imgproc.filter2D(yellowMask, densityMap, -1, gaussianKernel);
+            //   Imgproc.boxFilter(densityMap, densityMap, -1, new Size(101, 101));
+            //   Imgproc.boxFilter(densityMap, densityMap, -1, new Size(101, 101));
 
               // Convert all mats to CV_32F for arithmetic operations
               Mat invertFloat = new Mat();
@@ -101,12 +143,12 @@ public class ObjectDetection extends SubsystemBase {
               densityMap.convertTo(densityMap, CvType.CV_32F);
 
               // Compute distance transform inversion
-              Core.subtract(invertFloat, distanceTransform, distanceTransform);
+              //Core.subtract(invertFloat, distanceTransform, distanceTransform);
               invertFloat.release();
 
               // create 60-40 split of distance transform and density map
               Mat weightedMap = new Mat();
-              Core.addWeighted(distanceTransform, 0.6, densityMap, 0.4, 0, weightedMap);
+              Core.addWeighted(distanceTransform, 0.25, densityMap, 0.75, 0, weightedMap);
 
               // find brightest point in heatmap
               Core.MinMaxLocResult mmr = Core.minMaxLoc(weightedMap);
@@ -116,6 +158,7 @@ public class ObjectDetection extends SubsystemBase {
               Mat displayWeighted = new Mat();
               Core.normalize(distanceTransform, displayTransform, 0, 255, Core.NORM_MINMAX);
               Core.normalize(weightedMap, displayWeighted, 0, 255, Core.NORM_MINMAX);
+              // convert weighted map to heatmap
               displayTransform.convertTo(displayTransform, CvType.CV_8U);
               displayWeighted.convertTo(displayWeighted, CvType.CV_8U);
 
