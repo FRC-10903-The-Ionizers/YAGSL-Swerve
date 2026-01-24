@@ -84,49 +84,48 @@ public class ObjectDetection extends SubsystemBase {
               Core.inRange(hsvMat, new Scalar(20, 100, 100), new Scalar(30, 255, 255), yellowMask);
               binarySource.putFrame(yellowMask);
 
-              // fill in holes to create solid mask
-              Imgproc.morphologyEx(yellowMask, yellowMask, Imgproc.MORPH_CLOSE,
-              Imgproc.getStructuringElement(Imgproc.MORPH_ELLIPSE, new Size(5, 5)));
               Mat invertcolormatrix = new Mat(yellowMask.rows(), yellowMask.cols(), yellowMask.type(), new Scalar(255, 255, 255));
               Mat invertedYellowMask = new Mat();
-              Core.subtract(invertcolormatrix, yellowMask, invertedYellowMask);
+              Core.bitwise_not(yellowMask, invertedYellowMask);
 
-              // take distance transform of yellow mask
+              // Distance transform - gives distance from each pixel to nearest yellow pixel
               Mat distanceTransform = new Mat();
-              Imgproc.distanceTransform(invertedYellowMask, distanceTransform, Imgproc.DIST_L2, 3);
+              Imgproc.distanceTransform(invertedYellowMask, distanceTransform, Imgproc.DIST_L2, 5);
 
-              // create density map by applying box filter
+              // Create density map by applying box filter
               Mat densityMap = new Mat();
-              Imgproc.boxFilter(yellowMask, densityMap, -1, new Size(201, 201));
+              Imgproc.boxFilter(yellowMask, densityMap, CvType.CV_32F, new Size(101, 101));
 
-              // Convert all mats to CV_32F for arithmetic operations
-              Mat invertFloat = new Mat();
-              distanceTransform.convertTo(distanceTransform, CvType.CV_32F);
-              invertcolormatrix.convertTo(invertFloat, CvType.CV_32F);
-              densityMap.convertTo(densityMap, CvType.CV_32F);
+              // Normalize both maps to 0-1 range for proper weighting
+              Core.normalize(distanceTransform, distanceTransform, 0, 1, Core.NORM_MINMAX);
+              Core.normalize(densityMap, densityMap, 0, 1, Core.NORM_MINMAX);
 
-              // Compute distance transform inversion
-              Core.subtract(invertFloat, distanceTransform, distanceTransform);
-              invertFloat.release();
+              // Invert distance transform so closer to yellow = higher value
+              Mat ones = new Mat(distanceTransform.rows(), distanceTransform.cols(), CvType.CV_32F, new Scalar(1.0));
+              Core.subtract(ones, distanceTransform, distanceTransform);
+              ones.release();
 
-              // create 60-40 split of distance transform and density map
+              // Combine: 60% proximity (inverted distance), 40% density
               Mat weightedMap = new Mat();
               Core.addWeighted(distanceTransform, 0.6, densityMap, 0.4, 0, weightedMap);
 
-              // find brightest point in heatmap
+              // Find brightest point in heatmap
               Core.MinMaxLocResult mmr = Core.minMaxLoc(weightedMap);
 
-              // Normalize and convert all display mats to CV_8U for output
+              // Convert display mats to CV_8U for output
               Mat displayTransform = new Mat();
+              Mat displayDensity = new Mat();
               Mat displayWeighted = new Mat();
               Core.normalize(distanceTransform, displayTransform, 0, 255, Core.NORM_MINMAX);
+              Core.normalize(densityMap, displayDensity, 0, 255, Core.NORM_MINMAX);
               Core.normalize(weightedMap, displayWeighted, 0, 255, Core.NORM_MINMAX);
               displayTransform.convertTo(displayTransform, CvType.CV_8U);
+              displayDensity.convertTo(displayDensity, CvType.CV_8U);
               displayWeighted.convertTo(displayWeighted, CvType.CV_8U);
 
               // Output frames to dashboard
               transformSource.putFrame(displayTransform);
-              densitySource.putFrame(densityMap);
+              densitySource.putFrame(displayDensity);
               outputStream.putFrame(displayWeighted);
 
                // get coordinates of brightest point
@@ -139,12 +138,12 @@ public class ObjectDetection extends SubsystemBase {
               // Release Mats to prevent memory leaks
               hsvMat.release();
               yellowMask.release();
-              invertcolormatrix.release();
               invertedYellowMask.release();
               distanceTransform.release();
-              displayTransform.release();
               densityMap.release();
               weightedMap.release();
+              displayTransform.release();
+              displayDensity.release();
               displayWeighted.release();
             }
           });
