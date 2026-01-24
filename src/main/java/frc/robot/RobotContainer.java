@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.Command;
 
 import java.io.File;
 import java.util.Queue;
@@ -97,6 +98,8 @@ public class RobotContainer {
 
         // Bind aligning command to another button (e.g., B button)
         xboxController.b().onTrue(new InstantCommand(() -> detections.toggleObjectDetection()));
+
+        xboxController.x().onTrue(new InstantCommand(() -> detections.getCommand()));
 
         // Bind go to point test command to the D pad
         xboxController.povUp().onTrue(new GoToPoint(swerve, new Pose2d(0, 2, Rotation2d.kZero)));
