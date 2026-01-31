@@ -1,7 +1,7 @@
 package frc.robot;
 
+import frc.robot.Constants.DriveConstants;
 import frc.robot.stateSensors.RegionHandler;
-import frc.robot.subsystems.ObjectDetection;
 import frc.robot.subsystems.Swerve;
 import frc.robot.util.Auto;
 import frc.robot.util.Controller;
@@ -10,6 +10,11 @@ import frc.robot.commands.DrivingCommands.TeleopDriveCommand; // Assuming this c
 import frc.robot.commands.DrivingCommands.GoToPoint;
 import frc.robot.commands.DrivingCommands.TeleopAimDrive; // Assuming this command exists for aiming
 import frc.robot.commands.DrivingCommands.TeleopDriveToObject; // Assuming this command exists for aligning
+import frc.robot.commands.DrivingCommands.ToggleFieldRelative;
+import frc.robot.commands.VisionCommands.ObjectDetection;
+import frc.robot.commands.DrivingCommands.UpShift;
+import frc.robot.commands.DrivingCommands.DownShift;
+import frc.robot.commands.DrivingCommands.ToggleFieldRelative;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -37,7 +42,6 @@ public class RobotContainer {
     private final RegionHandler regionHandler = new RegionHandler(new File(Filesystem.getDeployDirectory(), "misc/regions.json"));
     private final Vision vision = new Vision(swerve);
     CommandXboxController xboxController = new CommandXboxController(0);
-    private final ObjectDetection detections = new ObjectDetection(swerve);
     
     public RobotContainer() {
         /**
@@ -94,9 +98,14 @@ public class RobotContainer {
          */
         // Bind aiming command to a button (e.g., A button)
         xboxController.a().whileTrue(new TeleopAimDrive(swerve, controller, new Pose2d(0, 0, null))); // Pass appropriate target pose
-
+        // shift do
+        xboxController.rightBumper().whileTrue(new UpShift(swerve));
+        xboxController.leftBumper().whileTrue(new DownShift(swerve));
         // Bind aligning command to another button (e.g., B button)
-        xboxController.b().onTrue(new InstantCommand(() -> detections.toggleObjectDetection()));
+        //toggle
+        xboxController.b().toggleOnFalse(new ObjectDetection(swerve));
+        xboxController.x().whileTrue(new ToggleFieldRelative(controller));
+
 
         // Bind go to point test command to the D pad
         xboxController.povUp().onTrue(new GoToPoint(swerve, new Pose2d(0, 2, Rotation2d.kZero)));

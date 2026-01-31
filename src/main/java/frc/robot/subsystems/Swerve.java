@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.DriveConstants.*;
+
 import java.io.File;
 
 import choreo.trajectory.SwerveSample;
@@ -17,6 +19,7 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import swervelib.SwerveDrive;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
@@ -36,7 +39,9 @@ public class Swerve extends SubsystemBase {
     private final PIDController xController = new PIDController(1, 0, 0);
     private final PIDController yController = new PIDController(1, 0, 0);
     private final PIDController headingController = new PIDController(1, 0, 0);
-
+    public static double currentGear = 1.0;
+    public static double LOW_GEAR_MULTIPLIER = 0.5;
+    public static double HIGH_GEAR_MULTIPLIER = 2.0;
     public Swerve() {
         /**
          * Swerve constructor for the robot.
@@ -47,6 +52,7 @@ public class Swerve extends SubsystemBase {
          * @return void
          */
         try {
+
             headingController.enableContinuousInput(-Math.PI, Math.PI);
             double maximumSpeed = Units.feetToMeters(4.5);
 
@@ -235,6 +241,6 @@ public class Swerve extends SubsystemBase {
          * @since 2026-01
          * @return void
          */
-        swerveDrive.drive(translation, rotation, isFieldRelative, false);
+        swerveDrive.drive(translation.times(currentGear), rotation, isFieldRelative, false);
     }
 }

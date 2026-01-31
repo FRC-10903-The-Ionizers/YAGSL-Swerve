@@ -31,7 +31,7 @@ public class Controller {
     // -------------------------------
     // Inner class to manage swerve control
     // -------------------------------
-    private boolean fieldRelative = true;
+    public boolean fieldRelative = true;
 
     public void toggleFieldRelative() {
         fieldRelative = !fieldRelative;
@@ -51,12 +51,12 @@ public class Controller {
 
     /** Get forward/backward, with deadband applied */
     public double getDriveX() {
-        return applyDeadband(-controller.getLeftY()) * Constants.DriveConstants.kControllerDriveMultiplier;
+        return applyDeadband(-controller.getLeftY());
     }
 
     /** Get strafe, with deadband applied */
     public double getDriveY() {
-        return applyDeadband(-controller.getLeftX()) * Constants.DriveConstants.kControllerDriveMultiplier;
+        return applyDeadband(-controller.getLeftX());
     }
 
     /** Get rotation, with deadband applied */
