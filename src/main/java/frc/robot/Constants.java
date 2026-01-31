@@ -28,7 +28,7 @@ public class Constants {
          * @author Max Clemetson, Jake Xie, Siddhartha Hiremath, Justin Baratta
          * @since 2025-10
          */
-        public static final double kControllerDriveMultiplier = 1.0;
+
         public static final double kControllerRotationMultiplier = 2.0;
         public static final double kAutoDriveMultiplier = 4.5;
         public static final double kMinimumDistanceToStop = 0.1;
