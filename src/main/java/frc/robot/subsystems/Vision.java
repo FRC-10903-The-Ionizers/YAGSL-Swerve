@@ -86,7 +86,7 @@ import frc.robot.Constants;
          * @return void
          */
          Optional<EstimatedRobotPose> visionEst = Optional.empty();
-         for (var change : camera.getAllUnreadResults()) {
+         for (var change : april_camera.getAllUnreadResults()) {
              visionEst = photonEstimator.update(change);
              updateEstimationStdDevs(visionEst, change.getTargets());
  
@@ -98,6 +98,10 @@ import frc.robot.Constants;
                          swerve.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
                         });
          }
+        System.out.println("running objects");
+        // if results exists, printall results
+        System.out.println(object_camera.getAllUnreadResults());
+
      }
  
      /**
