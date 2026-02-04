@@ -1,5 +1,7 @@
-package frc.robot.subsystems;
+package frc.robot.commands.VisionCommands;
 
+import frc.robot.subsystems.Swerve;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -21,7 +23,7 @@ import org.opencv.core.CvType;
 
 import frc.robot.Constants;
 
-public class ObjectDetection extends SubsystemBase {
+public class ObjectDetection extends Command {
    /**
     * ObjectDetection subsystem for detecting objects using PhotonVision.
     * 
@@ -40,6 +42,7 @@ public class ObjectDetection extends SubsystemBase {
    private double absoluteTargetYaw;
    private boolean currentlyTracking = false;
    private boolean objectDetectionOn = false;
+   // make swerve a requirement
    private Swerve swerve;
    Thread m_visionThread;
 
@@ -53,8 +56,13 @@ public class ObjectDetection extends SubsystemBase {
 
       this.swerve = swerve;
       // create an nxn Gaussian kernel (normalized). Adjust n as needed (odd n gives symmetric kernel)
+<<<<<<< HEAD:src/main/java/frc/robot/subsystems/ObjectDetection.java
+      int kernelSize = 31;
+      int downsampleFactor = 4;
+=======
       int kernelSize = 67;
       int downsampleFactor = 8;
+>>>>>>> 092081005ecdb83e60e9328af4cc603f1eff2964:src/main/java/frc/robot/commands/VisionCommands/ObjectDetection.java
       Mat gaussianKernel = new Mat(kernelSize, kernelSize, CvType.CV_32F);
       double sigma = kernelSize / 6.0; // ~3 sigma covers most of the kernel
       double mean = (kernelSize - 1) / 2.0;
@@ -123,12 +131,25 @@ public class ObjectDetection extends SubsystemBase {
                Imgproc.resize(yellowMask, yellowMask, downSize, 0, 0, Imgproc.INTER_AREA);
               Mat invertcolormatrix = new Mat(yellowMask.rows(), yellowMask.cols(), yellowMask.type(), new Scalar(255, 255, 255));
               Mat invertedYellowMask = new Mat();
+<<<<<<< HEAD:src/main/java/frc/robot/subsystems/ObjectDetection.java
+              //Core.subtract(invertcolormatrix, yellowMask, invertedYellowMask);
             
+              // take distance transform of yellow mask
+              Mat distanceTransform = new Mat();
+              Imgproc.distanceTransform(yellowMask, distanceTransform, Imgproc.DIST_L2, 3);
+=======
+            
+>>>>>>> 092081005ecdb83e60e9328af4cc603f1eff2964:src/main/java/frc/robot/commands/VisionCommands/ObjectDetection.java
 
               // create density map by applying box filter
               Mat densityMap = new Mat();
               Imgproc.boxFilter(yellowMask, densityMap, -1, new Size(21, 21));
               Imgproc.filter2D(yellowMask, densityMap, -1, gaussianKernel);
+<<<<<<< HEAD:src/main/java/frc/robot/subsystems/ObjectDetection.java
+            //   Imgproc.boxFilter(densityMap, densityMap, -1, new Size(101, 101));
+            //   Imgproc.boxFilter(densityMap, densityMap, -1, new Size(101, 101));
+=======
+>>>>>>> 092081005ecdb83e60e9328af4cc603f1eff2964:src/main/java/frc/robot/commands/VisionCommands/ObjectDetection.java
 
               // Convert all mats to CV_32F for arithmetic operations
               Mat invertFloat = new Mat();
@@ -141,6 +162,10 @@ public class ObjectDetection extends SubsystemBase {
 
               // create 60-40 split of distance transform and density map
               Mat weightedMap = new Mat();
+<<<<<<< HEAD:src/main/java/frc/robot/subsystems/ObjectDetection.java
+              Core.addWeighted(distanceTransform, 0.25, densityMap, 0.75, 0, weightedMap);
+=======
+>>>>>>> 092081005ecdb83e60e9328af4cc603f1eff2964:src/main/java/frc/robot/commands/VisionCommands/ObjectDetection.java
 
               // find brightest point in heatmap
               Core.MinMaxLocResult mmr = Core.minMaxLoc(weightedMap);
@@ -148,9 +173,17 @@ public class ObjectDetection extends SubsystemBase {
               // Normalize and convert all display mats to CV_8U for output
               Mat displayTransform = new Mat();
               Mat displayWeighted = new Mat();
+<<<<<<< HEAD:src/main/java/frc/robot/subsystems/ObjectDetection.java
+              Core.normalize(distanceTransform, displayTransform, 0, 255, Core.NORM_MINMAX);
+              Core.normalize(weightedMap, displayWeighted, 0, 255, Core.NORM_MINMAX);
+              // convert weighted map to heatmap
+              displayTransform.convertTo(displayTransform, CvType.CV_8U);
+              displayWeighted.convertTo(displayWeighted, CvType.CV_8U);
+=======
               Core.normalize(densityMap, densityMap, 0, 255, Core.NORM_MINMAX);
               // convert weighted map to heatmap
               densityMap.convertTo(displayTransform, CvType.CV_8U);
+>>>>>>> 092081005ecdb83e60e9328af4cc603f1eff2964:src/main/java/frc/robot/commands/VisionCommands/ObjectDetection.java
 
               // Output frames to dashboard
               transformSource.putFrame(displayTransform);
@@ -179,9 +212,10 @@ public class ObjectDetection extends SubsystemBase {
   m_visionThread.start();
    }
 
-   public void periodic() {
+   @Override
+   public void execute() {
       /**
-       * Periodic method for detecting objects using PhotonVision.
+       * Periodic method for detecting objects using custom vision.
        * 
        * @args None
        * @author Siddhartha Hiremath
@@ -189,10 +223,17 @@ public class ObjectDetection extends SubsystemBase {
        */
       // get current yaw of robot, and calculate relative yaw to target
 
-      // if (objectDetectionOn) {
-      //    Command command = getCommand();
-      //    command.schedule();
-      // }
+        double currentYaw = swerve.getPose().getRotation().getRadians();
+        System.out.println("Current Yaw: " + currentYaw);
+        System.out.println("Target Yaw: " + absoluteTargetYaw);
+
+        // drive robot to face target
+        //Commands.schedule(() -> {
+        // swerve.drive(new edu.wpi.first.math.geometry.Translation2d(0, 0), currentYaw - Math.toRadians(absoluteTargetYaw), false);
+        //}, swerve);
+        System.out.println("New Command Scheduled");
+
+        swerve.drive(new edu.wpi.first.math.geometry.Translation2d(0, 0), -(currentYaw - Math.toRadians(absoluteTargetYaw)), false);
    }
 
    public void setYaw(double relativeYaw){
@@ -207,56 +248,10 @@ public class ObjectDetection extends SubsystemBase {
       absoluteTargetYaw = relativeYaw + swerve.getPose().getRotation().getRadians();
    }
 
+   @Override
+    public boolean isFinished() {
+        return false; // Runs while button is held
+    }
 
-   public void toggleObjectDetection(){
-      /**
-       * Get the detection status of the object.
-       * 
-       * @args None
-       * @return boolean objectDetectionOn
-       * @author Siddhartha Hiremath
-       */
-      objectDetectionOn = !objectDetectionOn;
-   }
-
-   public Command getCommand(){
-      /**
-       * Get the command to align the robot to the detected object.
-       * 
-       * @args None
-       * @author Justin Baratta, refactored some code from Siddhartha Hiremath
-       * @return Command
-       * @since 2026-01-24
-       */
-      System.out.println("Get Command called");
-         if(objectDetectionOn == false){
-            return Commands.none();
-         }
-         double currentYaw = swerve.getPose().getRotation().getRadians();
-         System.out.println("Current Yaw: " + currentYaw);
-         System.out.println("Target Yaw: " + absoluteTargetYaw);
-
-         // drive robot to face target
-         //Commands.schedule(() -> {
-         // swerve.drive(new edu.wpi.first.math.geometry.Translation2d(0, 0), currentYaw - Math.toRadians(absoluteTargetYaw), false);
-         //}, swerve);
-
-         Command command = Commands.run(() -> {
-            double updatedYaw = swerve.getPose().getRotation().getRadians();
-            swerve.drive(new edu.wpi.first.math.geometry.Translation2d(0, 0), -(updatedYaw - Math.toRadians(absoluteTargetYaw)), false);
-            }, swerve).until(
-               this::isFinished
-            ).finallyDo((interrupted) -> {
-               swerve.drive(new edu.wpi.first.math.geometry.Translation2d(0, 0), 0, false);
-               System.out.println("Object Detection Alignment Complete");
-         });
-
-         return command;
-   }
-
-   public boolean isFinished(){
-      double updatedYaw = swerve.getPose().getRotation().getRadians();
-      double error = Math.abs(updatedYaw - Math.toRadians(absoluteTargetYaw));
-      return error < Math.toRadians(0.5); 
-   }
 }
+

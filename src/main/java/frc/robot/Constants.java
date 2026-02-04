@@ -34,7 +34,7 @@ public class Constants {
         public static final double kMinimumDistanceToStop = 0.1;
     }
     public static class Vision {
-        /**
+      /**
          * Vision constants for the robot. Make sure to set the camera names in case u have different cameras.
          * 
          * @author Max Clemetson, Jake Xie, SIddhartha Hiremath
@@ -42,6 +42,7 @@ public class Constants {
          */
         public static String kAprilCameraName = "Arducam_OV9281_USB_Camera";
         public static String kObjectCameraName = "Arducam_OV9782_USB_Camera";
+        public static Double kObjectCameraFovHorizontal = 70.0;
         public static Transform3d kRobotToCam = new Transform3d();
         public static AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);;
 
