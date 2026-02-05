@@ -37,6 +37,10 @@ public class Swerve extends SubsystemBase {
     private final PIDController yController = new PIDController(1, 0, 0);
     private final PIDController headingController = new PIDController(1, 0, 0);
 
+    private static boolean isLockedPosition = false;
+    public static double currentGear = 1.0;
+    
+
     public Swerve() {
         /**
          * Swerve constructor for the robot.
@@ -211,6 +215,42 @@ public class Swerve extends SubsystemBase {
         return target_angle;
     }
 
+    public static double getCurrentGear() {
+        /**
+         * Gets the current gear of the robot.
+         * 
+         * @args None
+         * @author Siddhartha Hiremath
+         * @since 2026-01
+         * @return double currentGear
+         */
+        return currentGear;
+    }
+
+    public static void setCurrentGear(double gearMultiplier) {
+        /**
+         * Sets the current gear of the robot.
+         * 
+         * @args double gearMultiplier
+         * @author Siddhartha Hiremath
+         * @since 2026-01
+         * @return void
+         */
+        currentGear = gearMultiplier;
+    }
+
+    public static void toggleIsLockedPosition() {
+        /**
+         * Sets whether the robot is in a locked position.
+         * 
+         * @args boolean isLocked
+         * @author Siddhartha Hiremath
+         * @since 2026-01
+         * @return void
+         */
+        isLockedPosition = !isLockedPosition;
+    }
+
     public void driveWhileLocked(Translation2d translation, boolean isFieldRelative, Pose2d targetPose){
         /**
          * Drives the robot while locked to a point on the field.
@@ -231,10 +271,19 @@ public class Swerve extends SubsystemBase {
          * Drives the robot.
          * 
          * @args Translation2d translation, double rotation, boolean isFieldRelative
-         * @author Justin Baratta
+         * @author Justin Baratta, Siddhartha Hiremath
          * @since 2026-01
          * @return void
          */
-        swerveDrive.drive(translation, rotation, isFieldRelative, false);
+        if (isLockedPosition) {
+            //locked position (x position)
+            swerveDrive.lockPose();
+            // lock the brakes
+            swerveDrive.setMotorIdleMode(true);
+            return;
+        }
+        else {
+            swerveDrive.drive(translation.times(currentGear), rotation, isFieldRelative, false);    
+        }
     }
 }
