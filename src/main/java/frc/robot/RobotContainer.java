@@ -100,13 +100,35 @@ public class RobotContainer {
         xboxController.b().onTrue(new InstantCommand(() -> detections.toggleObjectDetection()));
 
         xboxController.x().onTrue(new InstantCommand(() -> detections.getCommand()));
-
+        xboxController.y().onTrue(Commands.runOnce(() -> Swerve.toggleIsLockedPosition(), swerve));
         // Bind go to point test command to the D pad
         xboxController.povUp().onTrue(new GoToPoint(swerve, new Pose2d(0, 2, Rotation2d.kZero)));
         xboxController.povLeft().onTrue(new GoToPoint(swerve, new Pose2d(-2, 0, Rotation2d.kZero)));
         xboxController.povRight().onTrue(new GoToPoint(swerve, new Pose2d(-2, 0, Rotation2d.kZero)));
         xboxController.povDown().onTrue(new GoToPoint(swerve, new Pose2d(0, -2, Rotation2d.kZero)));
 
+        // change gear commands
+        xboxController.rightBumper().onTrue(Commands.runOnce(() -> {
+            if (Swerve.getCurrentGear()+1.0 < Constants.DriveConstants.kHIGH_GEAR_MULTIPLIER) {
+                Swerve.setCurrentGear(Swerve.getCurrentGear()+1.0);
+                System.out.println("Shifted to HIGH gear");
+            }
+            else {
+                Swerve.setCurrentGear(Constants.DriveConstants.kHIGH_GEAR_MULTIPLIER);
+                System.out.println("Shifted to HIGH gear");
+            }
+        }, swerve));
+
+        xboxController.leftBumper().onTrue(Commands.runOnce(() -> {
+            if (Swerve.getCurrentGear()-1.0 > Constants.DriveConstants.kLOW_GEAR_MULTIPLIER) {
+                Swerve.setCurrentGear(Swerve.getCurrentGear()-1);
+                System.out.println("Shifted to LOW gear");
+            }
+            else {
+                Swerve.setCurrentGear(Constants.DriveConstants.kLOW_GEAR_MULTIPLIER);
+                System.out.println("Shifted to LOW gear");
+            }
+        }, swerve));
         // // Region triggers for scheduling commands
         // Trigger inRegion1 = new Trigger(() -> regionHandler.inRegion("region1", swerve.getPose()));
         // Trigger inRegion2 = new Trigger(() -> regionHandler.inRegion("region2", swerve.getPose()));

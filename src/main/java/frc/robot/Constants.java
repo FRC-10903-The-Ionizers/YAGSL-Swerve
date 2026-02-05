@@ -32,6 +32,9 @@ public class Constants {
         public static final double kControllerRotationMultiplier = 2.0;
         public static final double kAutoDriveMultiplier = 4.5;
         public static final double kMinimumDistanceToStop = 0.1;
+        public static final double kLOW_GEAR_MULTIPLIER = 1.0;
+        public static final double kHIGH_GEAR_MULTIPLIER = 2.0;
+        
     }
     public static class Vision {
         /**
