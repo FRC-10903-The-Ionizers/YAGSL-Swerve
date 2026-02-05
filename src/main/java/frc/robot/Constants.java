@@ -37,7 +37,7 @@ public class Constants {
         
     }
     public static class Vision {
-      /**
+        /**
          * Vision constants for the robot. Make sure to set the camera names in case u have different cameras.
          * 
          * @author Max Clemetson, Jake Xie, SIddhartha Hiremath
