@@ -35,6 +35,20 @@ public class Constants {
         public static final double kLOW_GEAR_MULTIPLIER = 1.0;
         public static final double kHIGH_GEAR_MULTIPLIER = 2.0;
         
+        public static class GoToPointConstants {
+            public static final double kXP = 4.0;
+            public static final double kXI = 0.0;
+            public static final double kXD = 0.0;
+
+            public static final double kYP = 4.0;
+            public static final double kYI = 0.0;
+            public static final double kYD = 0.0;
+            
+            public static final double kHeadingP = 4.0;
+            public static final double kHeadingI = 0.0;
+            public static final double kHeadingD = 0.0;
+
+        }
     }
     public static class Vision {
         /**

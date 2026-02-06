@@ -1,5 +1,6 @@
 package frc.robot.commands.DrivingCommands;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -13,10 +14,25 @@ public class GoToPoint extends Command {
    * @author Justin Baratta - refactored from original code
    * @since 2026-01-20
    */
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Swerve swerve;
   private final Pose2d targetPose;
   private final double minDistance = Constants.DriveConstants.kMinimumDistanceToStop;
+
+  private final PIDController xController = new PIDController(
+    Constants.DriveConstants.GoToPointConstants.kXP, 
+    Constants.DriveConstants.GoToPointConstants.kXI, 
+    Constants.DriveConstants.GoToPointConstants.kXD
+  );
+  private final PIDController yController = new PIDController(
+    Constants.DriveConstants.GoToPointConstants.kYP, 
+    Constants.DriveConstants.GoToPointConstants.kYI, 
+    Constants.DriveConstants.GoToPointConstants.kYD
+  );
+  private final PIDController headingController = new PIDController(
+    Constants.DriveConstants.GoToPointConstants.kHeadingP, 
+    Constants.DriveConstants.GoToPointConstants.kHeadingI, 
+    Constants.DriveConstants.GoToPointConstants.kHeadingD
+  );
 
   public GoToPoint(Swerve subsystem, Pose2d targetPose) {
     /**
@@ -47,15 +63,11 @@ public class GoToPoint extends Command {
      * @return void
      */
     Pose2d currentPose = swerve.getPose();
-
-    double x_distance = targetPose.getX() - currentPose.getX();
-    double y_distance = targetPose.getY() - currentPose.getY();
-
-    Translation2d translation = new Translation2d(x_distance, y_distance);
-
-    double heading_distance = targetPose.getRotation().getDegrees() - currentPose.getRotation().getDegrees();
+    double xCalculated = xController.calculate(currentPose.getX(), targetPose.getX());
+    double yCalculated = yController.calculate(currentPose.getY(), targetPose.getY());
+    double headingCalculated = headingController.calculate(currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians());
     
-    swerve.drive(translation, heading_distance, true);
+    swerve.drive(new Translation2d(xCalculated, yCalculated), headingCalculated, true);
   }
 
   @Override
