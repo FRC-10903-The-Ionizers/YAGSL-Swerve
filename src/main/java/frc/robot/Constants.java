@@ -31,16 +31,17 @@ public class Constants {
         public static final double kControllerDriveMultiplier = 1.0;
         public static final double kControllerRotationMultiplier = 2.0;
         public static final double kAutoDriveMultiplier = 4.5;
-        public static final double kMinimumDistanceToStop = 0.1;
         public static final double kLOW_GEAR_MULTIPLIER = 1.0;
         public static final double kHIGH_GEAR_MULTIPLIER = 2.0;
         
-        public static class GoToPointConstants {
-            public static final double kXP = 4.0;
+        public static class GoToPoseConstants {
+            public static final double kMinimumDistanceToStop = 0.1;
+
+            public static final double kXP = 1.0;
             public static final double kXI = 0.0;
             public static final double kXD = 0.0;
 
-            public static final double kYP = 4.0;
+            public static final double kYP = 1.0;
             public static final double kYI = 0.0;
             public static final double kYD = 0.0;
             
