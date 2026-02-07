@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import swervelib.SwerveDrive;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
@@ -33,9 +34,21 @@ public class Swerve extends SubsystemBase {
     private boolean initialized = false;
     private Field2d field = new Field2d();
 
-    private final PIDController xController = new PIDController(1, 0, 0);
-    private final PIDController yController = new PIDController(1, 0, 0);
-    private final PIDController headingController = new PIDController(1, 0, 0);
+    private final PIDController xController = new PIDController(
+        Constants.DriveConstants.GoToPoseConstants.kXP, 
+        Constants.DriveConstants.GoToPoseConstants.kXI, 
+        Constants.DriveConstants.GoToPoseConstants.kXD
+    );
+    private final PIDController yController = new PIDController(
+        Constants.DriveConstants.GoToPoseConstants.kYP, 
+        Constants.DriveConstants.GoToPoseConstants.kYI, 
+        Constants.DriveConstants.GoToPoseConstants.kYD
+    );
+    private final PIDController headingController = new PIDController(
+        Constants.DriveConstants.GoToPoseConstants.kHeadingP, 
+        Constants.DriveConstants.GoToPoseConstants.kHeadingI, 
+        Constants.DriveConstants.GoToPoseConstants.kHeadingD
+    );
 
     private static boolean isLockedPosition = false;
     public static double currentGear = 1.0;
@@ -285,5 +298,22 @@ public class Swerve extends SubsystemBase {
         else {
             swerveDrive.drive(translation.times(currentGear), rotation, isFieldRelative, false);    
         }
+    }
+
+    public void driveToPose(Pose2d targetPose){
+        /**
+         * Drives the robot to given pose and rotation using PID controllers.
+         * 
+         * @args Pose2d targetPose
+         * @author Justin Baratta, Jake Xie
+         * @since 2026-02
+         * @return void
+         */
+        Pose2d currentPose = getPose();
+        double xCalculated = xController.calculate(currentPose.getX(), targetPose.getX());
+        double yCalculated = yController.calculate(currentPose.getY(), targetPose.getY());
+        double headingCalculated = headingController.calculate(currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians());
+        
+        drive(new Translation2d(xCalculated, yCalculated), headingCalculated, true);
     }
 }
