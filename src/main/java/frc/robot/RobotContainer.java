@@ -1,29 +1,21 @@
 package frc.robot;
 
+import java.io.File;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.DrivingCommands.DriveToPose;
+import frc.robot.commands.DrivingCommands.TeleopAimDrive; // Assuming this command exists for aiming
 import frc.robot.stateSensors.RegionHandler;
 import frc.robot.subsystems.ObjectDetection;
 import frc.robot.subsystems.Swerve;
-import frc.robot.util.Auto;
-import frc.robot.util.Controller;
 import frc.robot.subsystems.Vision;
-import frc.robot.commands.DrivingCommands.TeleopDriveCommand; // Assuming this command exists for default driving
-import frc.robot.commands.DrivingCommands.DriveToPose;
-import frc.robot.commands.DrivingCommands.TeleopAimDrive; // Assuming this command exists for aiming
-import frc.robot.commands.DrivingCommands.TeleopDriveToObject; // Assuming this command exists for aligning
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.Command;
-
-import java.io.File;
-import java.util.Queue;
-import java.util.function.Supplier;
+import frc.robot.util.Controller;
 
 public class RobotContainer {
 

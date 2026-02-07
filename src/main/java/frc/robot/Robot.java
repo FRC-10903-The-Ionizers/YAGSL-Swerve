@@ -1,17 +1,14 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import choreo.auto.AutoFactory;
-import edu.wpi.first.net.WebServer;
-import choreo.auto.AutoRoutine;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.commands.DrivingCommands.TeleopDriveCommand;
 import frc.robot.subsystems.Swerve;
 import frc.robot.util.Auto;
