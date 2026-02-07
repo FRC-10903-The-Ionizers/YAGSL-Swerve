@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Swerve;
 import frc.robot.Constants;
 
-public class GoToPoint extends Command {
+public class DriveToPose extends Command {
   /**
    * GoToPoint command for the robot.
    * 
@@ -16,25 +16,8 @@ public class GoToPoint extends Command {
    */
   private final Swerve swerve;
   private final Pose2d targetPose;
-  private final double minDistance = Constants.DriveConstants.kMinimumDistanceToStop;
 
-  private final PIDController xController = new PIDController(
-    Constants.DriveConstants.GoToPointConstants.kXP, 
-    Constants.DriveConstants.GoToPointConstants.kXI, 
-    Constants.DriveConstants.GoToPointConstants.kXD
-  );
-  private final PIDController yController = new PIDController(
-    Constants.DriveConstants.GoToPointConstants.kYP, 
-    Constants.DriveConstants.GoToPointConstants.kYI, 
-    Constants.DriveConstants.GoToPointConstants.kYD
-  );
-  private final PIDController headingController = new PIDController(
-    Constants.DriveConstants.GoToPointConstants.kHeadingP, 
-    Constants.DriveConstants.GoToPointConstants.kHeadingI, 
-    Constants.DriveConstants.GoToPointConstants.kHeadingD
-  );
-
-  public GoToPoint(Swerve subsystem, Pose2d targetPose) {
+  public DriveToPose(Swerve subsystem, Pose2d targetPose) {
     /**
      * GoToPoint constructor for the robot.
      * 
@@ -62,12 +45,7 @@ public class GoToPoint extends Command {
      * @since 2026-01-21
      * @return void
      */
-    Pose2d currentPose = swerve.getPose();
-    double xCalculated = xController.calculate(currentPose.getX(), targetPose.getX());
-    double yCalculated = yController.calculate(currentPose.getY(), targetPose.getY());
-    double headingCalculated = headingController.calculate(currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians());
-    
-    swerve.drive(new Translation2d(xCalculated, yCalculated), headingCalculated, true);
+    swerve.driveToPose(targetPose);
   }
 
   @Override
@@ -82,8 +60,8 @@ public class GoToPoint extends Command {
      */
     Pose2d currentPose = swerve.getPose();
     double distance = currentPose.getTranslation().getDistance(targetPose.getTranslation());
-    System.out.println(distance);
-    if(distance < minDistance){
+    
+    if(distance < Constants.DriveConstants.GoToPoseConstants.kMinimumDistanceToStop){
       return true;
     } else {
       return false;

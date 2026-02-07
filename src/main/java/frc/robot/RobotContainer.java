@@ -7,7 +7,7 @@ import frc.robot.util.Auto;
 import frc.robot.util.Controller;
 import frc.robot.subsystems.Vision;
 import frc.robot.commands.DrivingCommands.TeleopDriveCommand; // Assuming this command exists for default driving
-import frc.robot.commands.DrivingCommands.GoToPoint;
+import frc.robot.commands.DrivingCommands.DriveToPose;
 import frc.robot.commands.DrivingCommands.TeleopAimDrive; // Assuming this command exists for aiming
 import frc.robot.commands.DrivingCommands.TeleopDriveToObject; // Assuming this command exists for aligning
 import edu.wpi.first.math.geometry.Pose2d;
@@ -55,7 +55,6 @@ public class RobotContainer {
         // send data to Elastic
         SmartDashboard.putData("SwerveField", swerve.getField());
         SmartDashboard.putData(swerve);
-
     }
 
     // Remove controllerDrive() as it's replaced by commands
@@ -94,7 +93,7 @@ public class RobotContainer {
          * @return void
          */
         // Bind aiming command to a button (e.g., A button)
-        xboxController.a().whileTrue(new TeleopAimDrive(swerve, controller, new Pose2d(0, 0, null))); // Pass appropriate target pose
+        xboxController.a().whileTrue(new TeleopAimDrive(swerve, controller, new Pose2d(0, 0, null))); // Pass appropriate target pose (angle doesn't matter for aim drive)
 
         // Bind aligning command to another button (e.g., B button)
         xboxController.b().onTrue(new InstantCommand(() -> detections.toggleObjectDetection()));
@@ -102,10 +101,10 @@ public class RobotContainer {
         xboxController.x().onTrue(new InstantCommand(() -> detections.getCommand()));
         xboxController.y().onTrue(Commands.runOnce(() -> Swerve.toggleIsLockedPosition(), swerve));
         // Bind go to point test command to the D pad
-        xboxController.povUp().onTrue(new GoToPoint(swerve, new Pose2d(0, 2, Rotation2d.kZero)));
-        xboxController.povLeft().onTrue(new GoToPoint(swerve, new Pose2d(-2, 0, Rotation2d.kZero)));
-        xboxController.povRight().onTrue(new GoToPoint(swerve, new Pose2d(-2, 0, Rotation2d.kZero)));
-        xboxController.povDown().onTrue(new GoToPoint(swerve, new Pose2d(0, -2, Rotation2d.kZero)));
+        xboxController.povUp().onTrue(new DriveToPose(swerve, new Pose2d(0, 1.5, Rotation2d.kZero)));
+        xboxController.povLeft().onTrue(new DriveToPose(swerve, new Pose2d(-1.5, 0, Rotation2d.kZero)));
+        xboxController.povRight().onTrue(new DriveToPose(swerve, new Pose2d(1.5, 0, Rotation2d.kZero)));
+        xboxController.povDown().onTrue(new DriveToPose(swerve, new Pose2d(0, -1.5, Rotation2d.kZero)));
 
         // change gear commands
         xboxController.rightBumper().onTrue(Commands.runOnce(() -> {
