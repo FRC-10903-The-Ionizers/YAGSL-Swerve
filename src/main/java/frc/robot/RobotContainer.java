@@ -10,9 +10,9 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DrivingCommands.DriveToPose;
-import frc.robot.commands.DrivingCommands.TeleopAimDrive; // Assuming this command exists for aiming
 import frc.robot.stateSensors.RegionHandler;
 import frc.robot.subsystems.ObjectDetection;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Vision;
 import frc.robot.util.Controller;
@@ -29,6 +29,7 @@ public class RobotContainer {
     private final Controller controller = new Controller(0);
     private final RegionHandler regionHandler = new RegionHandler(new File(Filesystem.getDeployDirectory(), "misc/regions.json"));
     private final Vision vision = new Vision(swerve);
+    private final Shooter shooter = new Shooter(swerve);
     CommandXboxController xboxController = new CommandXboxController(0);
     private final ObjectDetection detections = new ObjectDetection(swerve);
     
@@ -85,7 +86,8 @@ public class RobotContainer {
          * @return void
          */
         // Bind aiming command to a button (e.g., A button)
-        xboxController.a().whileTrue(new TeleopAimDrive(swerve, controller, new Pose2d(0, 0, null))); // Pass appropriate target pose (angle doesn't matter for aim drive)
+        //xboxController.a().whileTrue(new TeleopAimDrive(swerve, controller, new Pose2d(0, 0, null))); // Pass appropriate target pose (angle doesn't matter for aim drive)
+        xboxController.a().whileTrue(Commands.runOnce(() -> shooter.toggleIsRunning(), shooter));
 
         // Bind aligning command to another button (e.g., B button)
         xboxController.b().onTrue(new InstantCommand(() -> detections.toggleObjectDetection()));
