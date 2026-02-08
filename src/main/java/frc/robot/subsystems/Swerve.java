@@ -83,7 +83,6 @@ public class Swerve extends SubsystemBase {
             DriverStation.reportError("Failed to load swerve configuration from /deploy/swerve: " + e.getMessage(),
                     e.getStackTrace());
         }
-        swerveDrive.resetOdometry(new Pose2d());
     }
 
     public void periodic() {

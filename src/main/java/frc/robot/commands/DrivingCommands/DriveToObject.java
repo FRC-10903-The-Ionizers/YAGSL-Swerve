@@ -35,16 +35,30 @@ public class DriveToObject extends Command {
     /**
      * Method that drives the swerves
      */
-    System.out.println("Executing DriveToObject command");
-    double[] dataFromPython = LimelightHelpers.getPythonScriptData("object_detection");
+    try {
+    // see available cameras
 
+    double[] dataFromPython = LimelightHelpers.getPythonScriptData("limelight-obj");
+    System.out.println("Data from Python: " + java.util.Arrays.toString(dataFromPython));
     // index 0 is x value of brightest point, we want to center that
-    double angle_diff = dataFromPython[0]/Vision.kObjectCameraPixelsHorizontal * Vision.kObjectCameraFovHorizontal;
+    double angle_diff = (dataFromPython[0] - Vision.kObjectCameraPixelsHorizontal / 2) / Vision.kObjectCameraPixelsHorizontal * Vision.kObjectCameraFovHorizontal;
+    System.out.println("Angle difference: " + angle_diff);
     // feed into pid controller to get rotation output
     double rotationOutput = controller.calculate(angle_diff, 0);
-    swerve.drive(new Translation2d(0.05, 0), rotationOutput, false);
-
+    if (dataFromPython[2] > Vision.kObjectDetectionThreshold) {
+        swerve.drive(new Translation2d(1, 0), rotationOutput/10, false);
     }
+    else {
+        swerve.drive(new Translation2d(0, 0), 1, false);
+        
+    }
+    }
+    catch (Exception e) {
+        System.out.println("Error in DriveToObject command: " + e.getMessage());
+    }
+    }
+
+
     public boolean isFinished() {
         return false; // Runs continuously
     }
