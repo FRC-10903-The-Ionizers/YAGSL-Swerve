@@ -32,22 +32,20 @@ public class Constants {
         public static final double kLOW_GEAR_MULTIPLIER = 1.0;
         public static final double kHIGH_GEAR_MULTIPLIER = 2.0;
         
-        public static class GoToPoseConstants {
-            public static final double kMinimumDistanceToStop = 0.1;
+        public static final double kMinimumDistanceToStop = 0.1;
 
-            public static final double kXP = 1.0;
-            public static final double kXI = 0.0;
-            public static final double kXD = 0.0;
+        public static final double kXP = 1.0;
+        public static final double kXI = 0.0;
+        public static final double kXD = 0.0;
 
-            public static final double kYP = 1.0;
-            public static final double kYI = 0.0;
-            public static final double kYD = 0.0;
-            
-            public static final double kHeadingP = 4.0;
-            public static final double kHeadingI = 0.0;
-            public static final double kHeadingD = 0.0;
+        public static final double kYP = 1.0;
+        public static final double kYI = 0.0;
+        public static final double kYD = 0.0;
+        
+        public static final double kHeadingP = 1.0;
+        public static final double kHeadingI = 0.0;
+        public static final double kHeadingD = 0.0;
 
-        }
     }
     public static class Vision {
         /**
@@ -57,9 +55,10 @@ public class Constants {
          * @since 2025-10
          */
         public static String kAprilCameraName = "Arducam_OV9281_USB_Camera";
-        public static String kObjectCameraName = "Arducam_OV9782_USB_Camera";
         public static Double kObjectCameraFovHorizontal = 70.0;
+        public static Double kObjectCameraPixelsHorizontal = 320.0;
         public static Transform3d kRobotToCam = new Transform3d();
+        public static Double kObjectDetectionThreshold = 40.0;
         public static AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);;
 
         public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);

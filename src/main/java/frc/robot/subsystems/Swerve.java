@@ -27,7 +27,6 @@ public class Swerve extends SubsystemBase {
     /**
      * Swerve subsystem for the robot.
      * 
-     * @author Max Clemetson, Jake Xie, Justin Baratta & Siddhartha Hiremath
      * @since 2025-10
      */
     private SwerveDrive swerveDrive;
@@ -35,19 +34,19 @@ public class Swerve extends SubsystemBase {
     private Field2d field = new Field2d();
 
     private final PIDController xController = new PIDController(
-        Constants.DriveConstants.GoToPoseConstants.kXP, 
-        Constants.DriveConstants.GoToPoseConstants.kXI, 
-        Constants.DriveConstants.GoToPoseConstants.kXD
+        Constants.DriveConstants.kXP, 
+        Constants.DriveConstants.kXI, 
+        Constants.DriveConstants.kXD
     );
     private final PIDController yController = new PIDController(
-        Constants.DriveConstants.GoToPoseConstants.kYP, 
-        Constants.DriveConstants.GoToPoseConstants.kYI, 
-        Constants.DriveConstants.GoToPoseConstants.kYD
+        Constants.DriveConstants.kYP, 
+        Constants.DriveConstants.kYI, 
+        Constants.DriveConstants.kYD
     );
     private final PIDController headingController = new PIDController(
-        Constants.DriveConstants.GoToPoseConstants.kHeadingP, 
-        Constants.DriveConstants.GoToPoseConstants.kHeadingI, 
-        Constants.DriveConstants.GoToPoseConstants.kHeadingD
+        Constants.DriveConstants.kHeadingP, 
+        Constants.DriveConstants.kHeadingI, 
+        Constants.DriveConstants.kHeadingD
     );
 
     private static boolean isLockedPosition = false;
@@ -59,7 +58,6 @@ public class Swerve extends SubsystemBase {
          * Swerve constructor for the robot.
          * 
          * @args None
-         * @author Max Clemetson & Jake Xie
          * @since 2025-10
          * @return void
          */
@@ -85,7 +83,6 @@ public class Swerve extends SubsystemBase {
             DriverStation.reportError("Failed to load swerve configuration from /deploy/swerve: " + e.getMessage(),
                     e.getStackTrace());
         }
-        swerveDrive.resetOdometry(new Pose2d());
     }
 
     public void periodic() {
@@ -94,7 +91,6 @@ public class Swerve extends SubsystemBase {
          * 
          * Updates the field position of the robot.
          * @args None
-         * @author Max Clemetson & Jake Xie
          * @since 2025-10
          * @return void
          */
@@ -110,7 +106,6 @@ public class Swerve extends SubsystemBase {
          * Resets the odometry of the robot.
          * 
          * @args Pose2d pose
-         * @author Max Clementson & Jake Xie
          * @since 2025-10
          * @return Pose2d
          */
@@ -127,7 +122,6 @@ public class Swerve extends SubsystemBase {
          * Gets the field position of the robot.
          * 
          * @args None
-         * @author Max Clementson & Jake Xie
          * @since 2025-10
          * @return Field2d
          */
@@ -154,7 +148,6 @@ public class Swerve extends SubsystemBase {
          * Follows a trajectory for the robot using elastic.
          * 
          * @args SwerveSample sample
-         * @author Max Clemetson & Justin Baratta
          * @since 2025-10
          * @return void
          */
@@ -181,7 +174,6 @@ public class Swerve extends SubsystemBase {
          * Gets the swerve drive object.
          * 
          * @args None
-         * @author Max Clemetson & Jake Xie
          * @since 2025-10
          * @return SwerveDrive
          */
@@ -194,7 +186,6 @@ public class Swerve extends SubsystemBase {
          * deviations to weight the measurement along with swerve drive's odometry.
          * 
          * @args Pose2d visionPose, double timestamp, Matrix<N3, N1> estimationStdDevs
-         * @author Max Clemetson & Jake Xie
          * @since 2025-10
          * @return void
          */
@@ -210,7 +201,6 @@ public class Swerve extends SubsystemBase {
          * Locks the robot's orientation to a point on the field.
          * 
          * @args double targetPointX, double targetPointY
-         * @author Justin Baratta - refactored from original code written by Siddhartha Hiremath
          * @since 2025-10
          * @return double target_angle
          */
@@ -233,7 +223,6 @@ public class Swerve extends SubsystemBase {
          * Gets the current gear of the robot.
          * 
          * @args None
-         * @author Siddhartha Hiremath
          * @since 2026-01
          * @return double currentGear
          */
@@ -245,7 +234,6 @@ public class Swerve extends SubsystemBase {
          * Sets the current gear of the robot.
          * 
          * @args double gearMultiplier
-         * @author Siddhartha Hiremath
          * @since 2026-01
          * @return void
          */
@@ -257,7 +245,6 @@ public class Swerve extends SubsystemBase {
          * Sets whether the robot is in a locked position.
          * 
          * @args boolean isLocked
-         * @author Siddhartha Hiremath
          * @since 2026-01
          * @return void
          */
@@ -269,7 +256,6 @@ public class Swerve extends SubsystemBase {
          * Drives the robot while locked to a point on the field.
          * 
          * @args Translation2d translation, boolean isFieldRelative, Pose2d targetPose
-         * @author Justin Baratta - refactored from original code
          * @since 2026-01-11
          * @return void
          */
@@ -284,7 +270,6 @@ public class Swerve extends SubsystemBase {
          * Drives the robot.
          * 
          * @args Translation2d translation, double rotation, boolean isFieldRelative
-         * @author Justin Baratta, Siddhartha Hiremath
          * @since 2026-01
          * @return void
          */
