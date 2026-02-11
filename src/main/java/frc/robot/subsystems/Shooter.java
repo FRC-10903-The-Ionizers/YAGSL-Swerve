@@ -10,7 +10,6 @@ import frc.robot.Constants;
 
 public class Shooter extends SubsystemBase{
 
-
     private final SparkMax topMotor = new SparkMax(Constants.ShooterConstants.kTopMotorID, MotorType.kBrushless);
     private final SparkMax bottomMotor = new SparkMax(Constants.ShooterConstants.kBottomMotorID, MotorType.kBrushless);
     private final Swerve swerve;
@@ -49,4 +48,5 @@ public class Shooter extends SubsystemBase{
     public void toggleIsRunning(){
         isRunning = !isRunning;
     }
+
 }

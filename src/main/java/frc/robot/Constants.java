@@ -82,5 +82,6 @@ public class Constants {
         public static final int kTopMotorID = 14;
         public static final int kBottomMotorID = 15;
         public static final Pose2d kHubPose = new Pose2d();
+        public static final double kInterpolationLambda = 100;
     }
 }
