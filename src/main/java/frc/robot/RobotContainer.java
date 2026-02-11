@@ -9,14 +9,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.DrivingCommands.DriveToObject;
 import frc.robot.commands.DrivingCommands.DriveToPose;
+import frc.robot.commands.DrivingCommands.DriveToObject;
 import frc.robot.stateSensors.RegionHandler;
-import frc.robot.subsystems.ObjectDetection;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Vision;
 import frc.robot.util.Controller;
-
+import frc.robot.Constants.DriveConstants;
+import edu.wpi.first.math.controller.PIDController;
 public class RobotContainer {
 
     /**
@@ -31,7 +33,6 @@ public class RobotContainer {
     private final Vision vision = new Vision(swerve);
     private final Shooter shooter = new Shooter(swerve);
     CommandXboxController xboxController = new CommandXboxController(0);
-    private final ObjectDetection detections = new ObjectDetection(swerve);
     
     public RobotContainer() {
         /**
@@ -90,9 +91,8 @@ public class RobotContainer {
         xboxController.a().whileTrue(Commands.runOnce(() -> shooter.toggleIsRunning(), shooter));
 
         // Bind aligning command to another button (e.g., B button)
-        xboxController.b().onTrue(new InstantCommand(() -> detections.toggleObjectDetection()));
+        xboxController.b().whileTrue(new DriveToObject(swerve, new PIDController(Constants.DriveConstants.kHeadingP, Constants.DriveConstants.kHeadingI, Constants.DriveConstants.kHeadingD)));
 
-        xboxController.x().onTrue(new InstantCommand(() -> detections.getCommand()));
         xboxController.y().onTrue(Commands.runOnce(() -> Swerve.toggleIsLockedPosition(), swerve));
         // Bind go to point test command to the D pad
         xboxController.povUp().onTrue(new DriveToPose(swerve, new Pose2d(0, 1.5, Rotation2d.kZero)));

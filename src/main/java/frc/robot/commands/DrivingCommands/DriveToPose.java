@@ -59,7 +59,7 @@ public class DriveToPose extends Command {
     Pose2d currentPose = swerve.getPose();
     double distance = currentPose.getTranslation().getDistance(targetPose.getTranslation());
     
-    if(distance < Constants.DriveConstants.GoToPoseConstants.kMinimumDistanceToStop){
+    if(distance < Constants.DriveConstants.kMinimumDistanceToStop){
       return true;
     } else {
       return false;
