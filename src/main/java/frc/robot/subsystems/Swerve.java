@@ -198,6 +198,7 @@ public class Swerve extends SubsystemBase {
 
     public double lockToPoint(double targetPointX, double targetPointY) {
         /**
+         * COMMAND
          * Locks the robot's orientation to a point on the field.
          * 
          * @args double targetPointX, double targetPointY
@@ -283,22 +284,5 @@ public class Swerve extends SubsystemBase {
         else {
             swerveDrive.drive(translation.times(currentGear), rotation, isFieldRelative, false);    
         }
-    }
-
-    public void driveToPose(Pose2d targetPose){
-        /**
-         * Drives the robot to given pose and rotation using PID controllers.
-         * 
-         * @args Pose2d targetPose
-         * @author Justin Baratta, Jake Xie
-         * @since 2026-02
-         * @return void
-         */
-        Pose2d currentPose = getPose();
-        double xCalculated = xController.calculate(currentPose.getX(), targetPose.getX());
-        double yCalculated = yController.calculate(currentPose.getY(), targetPose.getY());
-        double headingCalculated = headingController.calculate(currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians());
-        
-        drive(new Translation2d(xCalculated, yCalculated), headingCalculated, true);
     }
 }

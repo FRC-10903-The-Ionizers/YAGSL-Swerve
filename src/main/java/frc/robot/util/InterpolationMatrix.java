@@ -4,7 +4,7 @@ import frc.robot.Constants;
 
 public class InterpolationMatrix {
 
-    public static double[] whittakerSmoothing(double[] x) {
+    private static double[] whittakerSmoothing(double[] x) {
         int n = x.length;
         int d = 2;
 
@@ -81,6 +81,16 @@ public class InterpolationMatrix {
         }
 
         return z;
+    }
+
+    public static double[] linearInterpolation(double[] input) {
+        double[] output = new double[input.length - 1];
+
+        for (int i = 0; i < output.length; i++) {
+            output[i] = (input[i] + input[i + 1]) / 2.0;
+        }
+
+        return output;
     }
 
     

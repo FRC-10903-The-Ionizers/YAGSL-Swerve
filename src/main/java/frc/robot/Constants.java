@@ -37,11 +37,11 @@ public class Constants {
 
         public static final double kXP = 1.0;
         public static final double kXI = 0.0;
-        public static final double kXD = 0.0;
+        public static final double kXD = 0.1;
 
         public static final double kYP = 1.0;
         public static final double kYI = 0.0;
-        public static final double kYD = 0.0;
+        public static final double kYD = 0.1;
         
         public static final double kHeadingP = 1.0;
         public static final double kHeadingI = 0.0;
