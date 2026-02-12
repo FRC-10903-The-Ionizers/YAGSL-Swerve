@@ -13,12 +13,16 @@ import frc.robot.commands.DrivingCommands.DriveToObject;
 import frc.robot.commands.DrivingCommands.DriveToPose;
 import frc.robot.commands.DrivingCommands.TeleopAimDrive; // Assuming this command exists for aiming
 import frc.robot.commands.DrivingCommands.DriveToObject;
+import frc.robot.commands.DrivingCommands.MovementOriented;
 import frc.robot.stateSensors.RegionHandler;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Vision;
 import frc.robot.util.Controller;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.math.controller.PIDController;
+
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 public class RobotContainer {
 
     /**
@@ -92,6 +96,7 @@ public class RobotContainer {
         xboxController.b().whileTrue(new DriveToObject(swerve, new PIDController(Constants.DriveConstants.kHeadingP, Constants.DriveConstants.kHeadingI, Constants.DriveConstants.kHeadingD)));
 
         xboxController.y().onTrue(Commands.runOnce(() -> Swerve.toggleIsLockedPosition(), swerve));
+        xboxController.x().whileTrue(new MovementOriented(swerve));
         // Bind go to point test command to the D pad
         xboxController.povUp().onTrue(new DriveToPose(swerve, new Pose2d(0, 1.5, Rotation2d.kZero)));
         xboxController.povLeft().onTrue(new DriveToPose(swerve, new Pose2d(-1.5, 0, Rotation2d.kZero)));
@@ -120,13 +125,14 @@ public class RobotContainer {
                 System.out.println("Shifted to LOW gear");
             }
         }, swerve));
+    
         // // Region triggers for scheduling commands
-        // Trigger inRegion1 = new Trigger(() -> regionHandler.inRegion("region1", swerve.getPose()));
+        Trigger inBlueRegion = new Trigger(() -> regionHandler.inRegion("blue-zone", swerve.getPose()));
         // Trigger inRegion2 = new Trigger(() -> regionHandler.inRegion("region2", swerve.getPose()));
 
         // // Example: Schedule a command when entering region1
-        // inRegion1.onTrue(Commands.runOnce(() -> System.out.println("Robot entered region1")).andThen(/* Add specific command if needed */));
-        // inRegion1.onFalse(Commands.runOnce(() -> System.out.println("Robot left region1")));
+        inBlueRegion.onTrue(Commands.runOnce(() -> System.out.println("Robot entered blue-zone")));
+        //inBlueRegion.onFalse(Commands.runOnce(() -> System.out.println("Robot left blue-zone")));
 
         // inRegion2.onTrue(Commands.runOnce(() -> System.out.println("Robot entered region2")).andThen(/* Add specific command if needed */));
         // inRegion2.onFalse(Commands.runOnce(() -> System.out.println("Robot left region2")));
