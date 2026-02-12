@@ -196,28 +196,6 @@ public class Swerve extends SubsystemBase {
         swerveDrive.addVisionMeasurement(visionPose, timestamp, estimationStdDevs);
     }
 
-    public double lockToPoint(double targetPointX, double targetPointY) {
-        /**
-         * Locks the robot's orientation to a point on the field.
-         * 
-         * @args double targetPointX, double targetPointY
-         * @since 2025-10
-         * @return double target_angle
-         */
-        //get position
-        Pose2d currentPosition = swerveDrive.getPose();
-        double currentX = currentPosition.getX();
-        double currentY = currentPosition.getY();
-
-        System.out.println("Current Position: " + currentX + " " + currentY);
-        System.out.println("Target Position: " + targetPointX + " " + targetPointY);
-
-        double target_angle = Math.atan2(targetPointY - currentY, targetPointX - currentX);
-
-        // set the robot's target angle  - rad to deg
-        return target_angle;
-    }
-
     public static double getCurrentGear() {
         /**
          * Gets the current gear of the robot.
@@ -240,31 +218,6 @@ public class Swerve extends SubsystemBase {
         currentGear = gearMultiplier;
     }
 
-    public static void toggleIsLockedPosition() {
-        /**
-         * Sets whether the robot is in a locked position.
-         * 
-         * @args boolean isLocked
-         * @since 2026-01
-         * @return void
-         */
-        isLockedPosition = !isLockedPosition;
-    }
-
-    public void driveWhileLocked(Translation2d translation, boolean isFieldRelative, Pose2d targetPose){
-        /**
-         * Drives the robot while locked to a point on the field.
-         * 
-         * @args Translation2d translation, boolean isFieldRelative, Pose2d targetPose
-         * @since 2026-01-11
-         * @return void
-         */
-        double targetAngle = lockToPoint(targetPose.getX(), targetPose.getY());
-        headingController.setSetpoint(targetAngle);
-        double rotation = headingController.calculate(swerveDrive.getPose().getRotation().getRadians());
-        swerveDrive.drive(translation, rotation, isFieldRelative, false);
-    }
-
     public void drive(Translation2d translation, double rotation, boolean isFieldRelative){
         /**
          * Drives the robot.
@@ -274,7 +227,7 @@ public class Swerve extends SubsystemBase {
          * @return void
          */
         if (isLockedPosition) {
-            //locked position (x position)
+            // locked position (x position)
             swerveDrive.lockPose();
             // lock the brakes
             swerveDrive.setMotorIdleMode(true);
@@ -283,22 +236,5 @@ public class Swerve extends SubsystemBase {
         else {
             swerveDrive.drive(translation.times(currentGear), rotation, isFieldRelative, false);    
         }
-    }
-
-    public void driveToPose(Pose2d targetPose){
-        /**
-         * Drives the robot to given pose and rotation using PID controllers.
-         * 
-         * @args Pose2d targetPose
-         * @author Justin Baratta, Jake Xie
-         * @since 2026-02
-         * @return void
-         */
-        Pose2d currentPose = getPose();
-        double xCalculated = xController.calculate(currentPose.getX(), targetPose.getX());
-        double yCalculated = yController.calculate(currentPose.getY(), targetPose.getY());
-        double headingCalculated = headingController.calculate(currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians());
-        
-        drive(new Translation2d(xCalculated, yCalculated), headingCalculated, true);
     }
 }
