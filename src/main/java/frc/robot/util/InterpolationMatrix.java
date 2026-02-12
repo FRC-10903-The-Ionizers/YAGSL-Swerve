@@ -83,15 +83,25 @@ public class InterpolationMatrix {
         return z;
     }
 
-    public static double[] linearInterpolation(double[] input) {
-        double[] output = new double[input.length - 1];
+    public static double interpolate(double[] positions, double[] values, double point) {
+        if (point <= positions[0])
+            return values[0];
+        if (point >= positions[positions.length - 1])
+            return values[values.length - 1];
 
-        for (int i = 0; i < output.length; i++) {
-            output[i] = (input[i] + input[i + 1]) / 2.0;
+        int left = 0;
+        int right = positions.length - 1;
+
+        while (left < right - 1) {
+            int mid = (left + right) / 2;
+            if (positions[mid] <= point) {
+                left = mid;
+            } else {
+                right = mid;
+            }
         }
 
-        return output;
+        double fraction = (point - positions[left]) / (positions[right] - positions[left]);
+        return values[left] * (1 - fraction) + values[right] * fraction;
     }
-
-    
 }
