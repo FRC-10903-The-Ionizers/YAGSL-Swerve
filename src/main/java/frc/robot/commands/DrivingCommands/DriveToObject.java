@@ -44,17 +44,18 @@ public class DriveToObject extends Command {
         System.out.println("Angle difference: " + angle_diff);
         // feed into pid controller to get rotation output
         double rotationOutput = controller.calculate(angle_diff, 0);
+      
+     
         if (dataFromPython[2] > Vision.kObjectDetectionThreshold) {
             swerve.drive(new Translation2d(1, 0), rotationOutput/10, false);
         }
         else {
             swerve.drive(new Translation2d(0, 0), 1, false);
-            
         }
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
         System.out.println("Error in DriveToObject command: " + e.getMessage());
     }
+
     }
 
 
