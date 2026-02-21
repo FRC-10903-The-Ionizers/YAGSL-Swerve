@@ -1,12 +1,12 @@
 package frc.robot.commands.DrivingCommands;
 
-import java.lang.ModuleLayer.Controller;
-
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
 import edu.wpi.first.math.controller.PIDController;
+import frc.robot.util.Controller;
 
 public class MovementOriented extends Command {
   /**
@@ -41,7 +41,7 @@ public class MovementOriented extends Command {
   
   public void execute() {
     /**
-     * Executes the GoToPoint command.
+     * Executes the MovementOriented command.
      * Periodically updates the translation and heading distance to the target pose by subtracting the current pose from the target pose.
      * @args None
      * @since 2026-01-21
@@ -50,17 +50,13 @@ public class MovementOriented extends Command {
 
       //rotation oriented to movement direction
       // get movement direction
-      double movementDirection = Math.atan2(controller.t, translation.getX());
+      Translation2d translation = new Translation2d(controller.getDriveX(), controller.getDriveY());
+      double movementDirection = Math.atan2(translation.getY(), translation.getX());
       // set the robot's target angle to the movement direction
       headingController.setSetpoint(movementDirection);
-      double rotationOutput = headingController.calculate(swerveDrive.getPose().getRotation().getRadians());
-      swerveDrive.drive(translation.times(currentGear), rotationOutput, isFieldRelative, false);
-  }
-    System.out.println("Movement oriented mode enabled");
-  }
-
-  @Override
-  public void end(boolean interrupted) {
-    swerve.setMovementOriented(false);
-  }
+      double rotationOutput = headingController.calculate(swerve.getPose().getRotation().getRadians());
+      
+      double currentGear = swerve.getCurrentGear();
+      swerve.drive(translation.times(currentGear), rotationOutput, true);
+  };
 }
