@@ -10,8 +10,7 @@ import edu.wpi.first.math.controller.PIDController;
 
 public class DriveToObject extends Command {
     /**
-     * TeleopDriveCommand command for the robot. Literally just drives the robot.
-     * 
+    * 
      * @author Max Clemetson
      * @since 2026-01-15
      */
@@ -45,7 +44,8 @@ public class DriveToObject extends Command {
         System.out.println("Angle difference: " + angle_diff);
         // feed into pid controller to get rotation output
         double rotationOutput = controller.calculate(angle_diff, 0);
-
+      
+     
         if (dataFromPython[2] > Vision.kObjectDetectionThreshold) {
             swerve.drive(new Translation2d(1, 0), rotationOutput/10, false);
         }
